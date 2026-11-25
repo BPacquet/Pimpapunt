@@ -1,4 +1,4 @@
-KAPSTOK – lokale versie
+Pimpapunt – lokale versie
 
 Bestanden: index.html, sw.js, manifest.webmanifest en drie iconen.
 Zet ze samen in één map op een webserver met HTTPS (GitHub Pages,
