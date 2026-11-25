@@ -1,0 +1,14 @@
+{
+  "name": "Kapstok – kinderopvang",
+  "short_name": "Kapstok",
+  "lang": "nl-BE",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F3F7FA",
+  "theme_color": "#2F9E74",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

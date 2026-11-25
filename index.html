@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="nl-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kapstok</title>
+<meta name="theme-color" content="#2F9E74">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kapstok">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --paper:#F3F7FA; --surface:#FFFFFF; --sunk:#E6EDF3; --line:#D3DDE6;
+  --ink:#22304D; --muted:#5D6B84;
+  --present:#2F9E74; --present-soft:#DDF2E9;
+  --sleep:#6C63C9; --sleep-soft:#E7E5FA;
+  --diaper:#C9860F; --diaper-soft:#FBF0D9;
+  --alert:#C23B31; --alert-soft:#FCE5E2;
+  --away:#A3AEC0; --focus:#3B7BD9;
+  --display: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", -apple-system, system-ui, sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#141B2A; --surface:#1C2538; --sunk:#243049; --line:#33415E;
+    --ink:#E8EDF6; --muted:#A3B0C7;
+    --present:#4CC495; --present-soft:#1D3B33;
+    --sleep:#9B93F0; --sleep-soft:#2C2A4E;
+    --diaper:#E9AE3F; --diaper-soft:#3A3120;
+    --alert:#F07468; --alert-soft:#45231F;
+    --away:#5F6C84; --focus:#77A6F0;
+    color-scheme: dark;
+  }
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.45;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+img{max-width:100%;display:block}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:1100px;margin:0 auto;padding:12px 18px 0;display:grid;grid-template-columns:1fr auto;gap:8px 16px;align-items:center}
+.brand{display:flex;align-items:baseline;gap:12px;min-width:0}
+.brand h1{font-family:var(--display);font-weight:700;font-size:28px;margin:0}
+.brand .date{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scan{display:flex;align-items:center;gap:8px;background:var(--sunk);border-radius:999px;padding:6px 6px 6px 14px;min-width:0}
+.scan svg{flex:none;color:var(--muted)}
+.scan input{border:0;background:transparent;width:150px;min-width:0;padding:6px 0;outline:none}
+.scan input::placeholder{color:var(--muted)}
+.scan .dot{width:10px;height:10px;border-radius:50%;background:var(--away);margin-right:6px;flex:none;transition:background .2s}
+.scan.live .dot{background:var(--present)}
+.tabs{grid-column:1/-1;display:flex;gap:4px;margin-top:4px}
+.tab{border:0;background:none;padding:10px 14px 12px;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.count{margin-left:auto;align-self:center;color:var(--muted);font-size:15px}
+.count b{color:var(--present);font-size:17px}
+
+main{max-width:1100px;margin:0 auto;padding:22px 18px 60px}
+.notice{background:var(--diaper-soft);border-radius:12px;padding:12px 14px;margin-bottom:18px;display:none;gap:10px;align-items:center;flex-wrap:wrap}
+.notice.show{display:flex}
+
+.rack{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 14px}
+.hook{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:6px 4px 10px;border-radius:18px;position:relative}
+.hook:focus-visible{outline:3px solid var(--focus)}
+.hook::before{content:"";width:28px;height:12px;border:4px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0;margin-bottom:-4px}
+.ring{width:108px;height:108px;border-radius:50%;padding:6px;background:var(--away);display:grid;place-items:center;transition:background .25s}
+.hook[data-state="in"] .ring{background:var(--present)}
+.hook[data-state="sleep"] .ring{background:var(--sleep)}
+.hook[data-state="out"] .ring{background:var(--line)}
+.av{width:100%;height:100%;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-family:var(--display);font-size:34px;font-weight:700;color:#fff;border:4px solid var(--surface)}
+.av img{width:100%;height:100%;object-fit:cover}
+.hook[data-state="absent"] .av,.hook[data-state="out"] .av{filter:saturate(.35);opacity:.78}
+.hook .nm{font-weight:700;font-size:18px;line-height:1.2}
+.hook .st{font-size:14px;color:var(--muted);min-height:20px}
+.hook[data-state="in"] .st{color:var(--present)}
+.hook[data-state="sleep"] .st{color:var(--sleep)}
+.hook .allergy-dot{position:absolute;top:30px;right:calc(50% - 60px);width:24px;height:24px;border-radius:50%;background:var(--alert);color:#fff;font-weight:700;font-size:14px;display:grid;place-items:center;border:3px solid var(--paper)}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty h2{font-family:var(--display);font-weight:700;color:var(--ink);font-size:24px;margin:0 0 8px}
+
+.btn{border:0;border-radius:14px;padding:13px 18px;font-weight:700;cursor:pointer;background:var(--sunk);min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.primary{background:var(--ink);color:var(--surface)}
+.btn.go{background:var(--present);color:#fff}
+.btn.sleep{background:var(--sleep-soft);color:var(--sleep)}
+.btn.sleep.on{background:var(--sleep);color:#fff}
+.btn.dia{background:var(--diaper-soft);color:var(--diaper)}
+.btn.danger{background:none;color:var(--alert);padding-left:0;padding-right:0}
+.btn.ghost{background:none;border:1px solid var(--line)}
+.btn.small{min-height:38px;padding:8px 12px;border-radius:10px;font-size:15px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;align-items:center}
+.list{background:var(--surface);border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.item{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.item .av{width:52px;height:52px;font-size:20px;border-width:0}
+.item.rep{grid-template-columns:1fr auto}
+.sub{color:var(--muted);font-size:15px}
+.chip{display:inline-block;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.chip.alert{background:var(--alert-soft);color:var(--alert)}
+.chip.ok{background:var(--present-soft);color:var(--present)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
+.panel h2{font-family:var(--display);font-weight:700;font-size:21px;margin:0 0 6px}
+.panel p{margin:0 0 12px;max-width:62ch}
+
+.scrim{position:fixed;inset:0;background:rgba(15,22,38,.45);z-index:20;display:none;align-items:flex-end;justify-content:center}
+.scrim.open{display:flex}
+.sheet{background:var(--surface);width:100%;max-width:720px;max-height:92vh;max-height:92dvh;overflow:auto;-webkit-overflow-scrolling:touch;border-radius:24px 24px 0 0;padding:20px 20px calc(28px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out}
+@media (min-width:760px){.scrim{align-items:center}.sheet{border-radius:24px;max-height:88vh}}
+@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}.ring{transition:none}}
+.sh-head{display:flex;gap:16px;align-items:center;margin-bottom:16px}
+.sh-head .ring{width:84px;height:84px;padding:5px;flex:none}
+.sh-head .av{font-size:28px}
+.sh-head h2{font-family:var(--display);font-weight:700;font-size:26px;margin:0;line-height:1.15}
+.close{margin-left:auto;align-self:flex-start;border:0;background:var(--sunk);width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:22px;line-height:1;flex:none}
+.banner{background:var(--alert-soft);color:var(--alert);border-radius:14px;padding:10px 14px;font-weight:700;margin-bottom:14px}
+.banner span{font-weight:400}
+.block{border-top:1px solid var(--line);padding:16px 0}
+.block h3{font-family:var(--display);font-weight:600;font-size:19px;margin:0 0 10px}
+.big{width:100%;min-height:60px;font-size:19px}
+.timefield{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:15px}
+.timefield input{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:6px 8px;min-height:38px}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{display:grid;grid-template-columns:58px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)}
+.tl li:last-child{border-bottom:0}
+.tl time{font-weight:700;font-variant-numeric:tabular-nums}
+.x{border:0;background:none;color:var(--muted);font-size:20px;width:36px;height:36px;border-radius:50%;cursor:pointer}
+.tag{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.photos figure{margin:0;position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--sunk)}
+.photos img{width:100%;height:100%;object-fit:cover}
+.photos figcaption{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;border-radius:6px;padding:1px 6px}
+.photos .px{position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:18px;cursor:pointer}
+.filebtn{position:relative;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.note-in{display:flex;gap:8px}
+.note-in input{flex:1;min-width:0;border:1px solid var(--line);background:var(--paper);border-radius:12px;padding:10px 12px}
+dl.info{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:10px 0 0}
+dl.info dt{color:var(--muted)}
+dl.info dd{margin:0;overflow-wrap:anywhere}
+dl.info a{color:var(--focus)}
+details summary{cursor:pointer;font-family:var(--display);font-size:19px;font-weight:600;padding:4px 0}
+.hist{width:100%;border-collapse:collapse;font-size:15px}
+.hist td,.hist th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.hist th{color:var(--muted);font-weight:400}
+pre.report{white-space:pre-wrap;font-family:var(--body);font-size:16px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0;overflow-wrap:anywhere}
+
+form .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){form .grid{grid-template-columns:1fr}}
+fieldset{border:0;padding:0;margin:0 0 18px}
+legend{font-family:var(--display);font-weight:600;font-size:19px;margin-bottom:8px;padding:0}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:15px;color:var(--muted)}
+label.f.wide{grid-column:1/-1}
+label.f input,label.f textarea{border:1px solid var(--line);background:var(--paper);border-radius:12px;padding:10px 12px;color:var(--ink);font-size:17px;min-height:46px}
+textarea{resize:vertical}
+.mailbox textarea{width:100%;min-height:280px;border:1px solid var(--line);background:var(--paper);border-radius:12px;padding:12px;font-size:16px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(160%);background:var(--ink);color:var(--surface);padding:12px 18px;border-radius:14px;z-index:40;max-width:min(92vw,520px);transition:transform .25s;font-weight:700}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.hidden{display:none !important}
+@media (max-width:560px){
+  .top-in{grid-template-columns:1fr}
+  .scan input{width:100%}
+  .rack{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:18px 8px}
+  .ring{width:92px;height:92px}
+  .hook .allergy-dot{right:calc(50% - 52px);top:28px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><h1>Kapstok</h1><span class="date" id="today-label"></span></div>
+    <label class="scan" id="scanbox">
+      <span class="dot" aria-hidden="true"></span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M7 10h4M7 14h7"/></svg>
+      <input id="scan" type="text" inputmode="none" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Badge scannen" aria-label="Badge scannen">
+    </label>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="today">Vandaag</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="kids">Kinderen</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="admin">Beheer</button>
+      <span class="count" id="count"></span>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="notice" id="notice"></div>
+  <section id="view-today"><div class="rack" id="rack"></div></section>
+  <section id="view-kids" class="hidden">
+    <div class="toolbar"><button class="btn primary" data-act="new-kid">Kind toevoegen</button></div>
+    <div class="list" id="kidlist"></div>
+  </section>
+  <section id="view-admin" class="hidden">
+    <div class="panel">
+      <h2>Back-up</h2>
+      <p>Alle gegevens staan alleen op dit toestel. Gaat het toestel verloren of wordt Kapstok verwijderd, dan zijn ze weg. Maak daarom elke week een back-up en bewaar die op een veilige plek, zoals OneDrive of een USB-stick.</p>
+      <p class="sub" id="last-backup"></p>
+      <div class="row">
+        <button class="btn primary" data-act="backup" data-photos="0">Back-up zonder foto’s</button>
+        <button class="btn ghost" data-act="backup" data-photos="30">Met foto’s van de laatste 30 dagen</button>
+        <label class="btn ghost filebtn">Back-up terugzetten<input type="file" id="restore-in" accept="application/json,.json"></label>
+      </div>
+      <div id="backup-ready" class="row" style="margin-top:12px"></div>
+    </div>
+    <div class="panel">
+      <h2>Kinderlijst als CSV</h2>
+      <p>Vul de kinderlijst in Excel in en importeer ze hier. Gebruik het lege sjabloon voor de juiste kolommen. Bestaande kinderen worden herkend op badge of op naam en geboortedatum.</p>
+      <div class="row">
+        <label class="btn ghost filebtn">CSV importeren<input type="file" id="csv-in" accept=".csv,text/csv,text/plain"></label>
+        <button class="btn ghost" data-act="csv-export">CSV exporteren</button>
+        <button class="btn ghost" data-act="csv-template">Leeg sjabloon</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Dagverslag</h2>
+      <label class="f">Ondertekening onderaan elk dagverslag<input id="set-sign" placeholder="Het team van de opvang"></label>
+    </div>
+    <div class="panel">
+      <h2>Opslag op dit toestel</h2>
+      <p id="storage-info">Berekenen…</p>
+    </div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+/* ================= helpers ================= */
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const dayKey = (d=new Date()) => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const hhmm = iso => { if(!iso) return "–"; const d=new Date(iso); return pad(d.getHours())+":"+pad(d.getMinutes()); };
+const DAYS = ["zondag","maandag","dinsdag","woensdag","donderdag","vrijdag","zaterdag"];
+const MONTHS = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
+const parseKey = key => { const [y,m,d]=key.split("-").map(Number); return new Date(y,m-1,d); };
+const longDate = key => { const dt=parseKey(key); return DAYS[dt.getDay()]+" "+dt.getDate()+" "+MONTHS[dt.getMonth()]; };
+const shortDate = key => { const dt=parseKey(key); return dt.getDate()+"/"+(dt.getMonth()+1); };
+const dur = (a,b) => { const m=Math.round((new Date(b)-new Date(a))/60000); if(m<60) return m+" min"; return Math.floor(m/60)+" u "+pad(m%60)+" min"; };
+const uid = () => (crypto.randomUUID ? crypto.randomUUID().replace(/-/g,"").slice(0,16) : Date.now().toString(36)+Math.random().toString(36).slice(2,8));
+const HUES = [205,160,28,340,265,95,190,12,300,48];
+const hue = s => { let h=0; for(const c of String(s)) h=(h*31+c.charCodeAt(0))>>>0; return HUES[h%HUES.length]; };
+const fullName = c => [c.voornaam, c.naam].filter(Boolean).join(" ");
+const safeName = s => String(s||"kind").replace(/[^\w-]+/g,"_");
+const normBadge = s => String(s||"").trim().toUpperCase();
+function age(bd){
+  if(!bd) return ""; const b=new Date(bd), n=new Date(); if(isNaN(b)) return "";
+  let months=(n.getFullYear()-b.getFullYear())*12+(n.getMonth()-b.getMonth()); if(n.getDate()<b.getDate()) months--;
+  if(months<0) return ""; if(months<24) return months+(months===1?" maand":" maanden");
+  const y=Math.floor(months/12), r=months%12; return y+" jaar"+(r? ", "+r+(r===1?" maand":" maanden"):"");
+}
+let toastT;
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),3200); }
+function notice(html){ const n=$("#notice"); n.innerHTML=html||""; n.classList.toggle("show",!!html); }
+
+/* ================= settings (klein, in localStorage) ================= */
+const SETKEY="kapstok.settings";
+const SET = (()=>{ try{ return JSON.parse(localStorage.getItem(SETKEY)||"{}"); }catch(_){ return {}; } })();
+function saveSet(){ try{ localStorage.setItem(SETKEY, JSON.stringify(SET)); }catch(_){} }
+
+/* ================= IndexedDB ================= */
+const DB = {
+  db:null,
+  open(){
+    return new Promise((res,rej)=>{
+      const r=indexedDB.open("kapstok",1);
+      r.onupgradeneeded=()=>{ const d=r.result;
+        d.createObjectStore("children",{keyPath:"id"});
+        d.createObjectStore("days",{keyPath:"date"});
+        const rs=d.createObjectStore("reports",{keyPath:"key"}); rs.createIndex("childId","childId");
+        d.createObjectStore("photos",{keyPath:"id"}); };
+      r.onsuccess=()=>{ DB.db=r.result; res(); };
+      r.onerror=()=>rej(r.error);
+    });
+  },
+  run(store, mode, fn){
+    return new Promise((res,rej)=>{
+      const t=DB.db.transaction(store,mode); const req=fn(t.objectStore(store)); let out;
+      if(req) req.onsuccess=()=>{ out=req.result; };
+      t.oncomplete=()=>res(out); t.onerror=()=>rej(t.error); t.onabort=()=>rej(t.error);
+    });
+  },
+  get:(st,k)=>DB.run(st,"readonly",s=>s.get(k)),
+  all:(st)=>DB.run(st,"readonly",s=>s.getAll()),
+  put:(st,v)=>DB.run(st,"readwrite",s=>s.put(v)),
+  del:(st,k)=>DB.run(st,"readwrite",s=>s.delete(k)),
+  byIndex:(st,idx,k)=>DB.run(st,"readonly",s=>s.index(idx).getAll(k)),
+};
+function failWrite(err){
+  const n=err && err.name;
+  if(n==="QuotaExceededError") toast("De opslag op dit toestel is vol. Maak een back-up en verwijder oude foto’s.");
+  else toast("Opslaan lukte niet"+(n? " ("+n+")":"")+".");
+}
+
+/* ================= photos ================= */
+const urlCache=new Map();
+async function photoURL(id){
+  if(urlCache.has(id)) return urlCache.get(id);
+  const p=await DB.get("photos",id).catch(()=>null); if(!p||!p.blob) return null;
+  const u=URL.createObjectURL(p.blob); urlCache.set(id,u); return u;
+}
+function hydratePhotos(root=document){
+  root.querySelectorAll("img[data-photo]:not([src])").forEach(img=>{
+    photoURL(img.dataset.photo).then(u=>{ if(u) img.src=u; else { const f=img.closest("figure"); (f||img).remove(); } });
+  });
+}
+function compress(file){
+  return new Promise((res,rej)=>{
+    const url=URL.createObjectURL(file); const img=new Image();
+    img.onload=()=>{ const max=1400; let w=img.naturalWidth, h=img.naturalHeight; const r=Math.min(1,max/Math.max(w,h)); w=Math.round(w*r); h=Math.round(h*r);
+      const cv=document.createElement("canvas"); cv.width=w; cv.height=h; cv.getContext("2d").drawImage(img,0,0,w,h);
+      cv.toBlob(b=>{ URL.revokeObjectURL(url); b? res(b) : rej(new Error("compress")); }, "image/jpeg", .8); };
+    img.onerror=()=>{ URL.revokeObjectURL(url); rej(new Error("load")); };
+    img.src=url;
+  });
+}
+async function storePhoto(file){ const blob=await compress(file); const id=uid(); await DB.put("photos",{id, blob, createdAt:new Date().toISOString()}); return id; }
+
+/* ================= files out ================= */
+async function saveFile(name, blob){
+  try{
+    const file=new File([blob], name, {type:blob.type||"application/octet-stream"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file]}); return; }
+  }catch(err){ if(err && err.name==="AbortError") return; }
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },5000);
+}
+const blobToDataURL = b => new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); r.readAsDataURL(b); });
+
+/* ================= state ================= */
+const S = { children:new Map(), day:null, date:dayKey(), openChild:null, sheetMode:null, ready:false };
+const kidsSorted = () => [...S.children.values()].sort((a,b)=>(a.voornaam||"").localeCompare(b.voornaam||"","nl"));
+const emptyEntry = () => ({ sessions:[], sleeps:[], diapers:[], notes:[], photos:[], mailedAt:null });
+function entry(id){ const e=S.day && S.day.kids[id]; return Object.assign(emptyEntry(), e ? JSON.parse(JSON.stringify(e)) : {}); }
+function status(id){
+  const e=entry(id); const last=e.sessions[e.sessions.length-1];
+  if(!last) return {state:"absent", label:"Nog niet binnen"};
+  if(last.out) return {state:"out", label:"Vertrokken "+hhmm(last.out)};
+  const sl=e.sleeps[e.sleeps.length-1];
+  if(sl && !sl.end) return {state:"sleep", label:"Slaapt sinds "+hhmm(sl.start)};
+  return {state:"in", label:"Binnen sinds "+hhmm(last.in)};
+}
+async function loadAll(){
+  const kids=await DB.all("children"); S.children=new Map(kids.map(c=>[c.id,c]));
+  S.day=(await DB.get("days",S.date)) || {date:S.date, kids:{}};
+  S.ready=true; renderAll(); checkBackupAge();
+}
+function saveEntry(id, mutate){
+  const e=entry(id); mutate(e); S.day.kids[id]=e; S.day.date=S.date;
+  DB.put("days", S.day).catch(failWrite);
+  renderAll();
+}
+function at(){ const v=$("#act-time") && $("#act-time").value; if(!v) return new Date().toISOString(); const [h,m]=v.split(":").map(Number); const d=new Date(); d.setHours(h,m,0,0); return d.toISOString(); }
+function resetTime(){ const t=$("#act-time"); if(t) t.value=""; }
+
+/* ================= actions ================= */
+function checkIn(id,t){ saveEntry(id, e=>{ e.sessions.push({in:t||new Date().toISOString(), out:null}); }); }
+function checkOut(id,t){
+  const when=t||new Date().toISOString();
+  saveEntry(id, e=>{ const last=e.sessions[e.sessions.length-1]; if(last && !last.out) last.out=when; const sl=e.sleeps[e.sleeps.length-1]; if(sl && !sl.end) sl.end=when; });
+}
+function togglePresence(id){
+  const st=status(id).state; const c=S.children.get(id); const now=new Date().toISOString();
+  if(st==="absent"||st==="out"){ checkIn(id,now); toast(c.voornaam+" is binnen om "+hhmm(now)); return "in"; }
+  checkOut(id,now); toast(c.voornaam+" vertrekt om "+hhmm(now)+". Het dagverslag staat klaar."); return "out";
+}
+
+/* ================= RFID ================= */
+function handleBadge(raw){
+  const code=normBadge(raw); if(code.length<3 || !S.ready) return;
+  if(S.sheetMode==="form"){ const f=$("#f-badge"); if(f){ f.value=code; toast("Badge ingevuld"); } return; }
+  const kid=kidsSorted().find(c=>normBadge(c.badge)===code);
+  if(!kid){ openLinkBadge(code); return; }
+  const res=togglePresence(kid.id);
+  if(res==="out") openMail(kid.id); else if(S.sheetMode==="child" && S.openChild===kid.id) renderSheet();
+}
+let buf="", lastKey=0;
+document.addEventListener("keydown", ev=>{
+  const tgt=ev.target, tag=(tgt && tgt.tagName)||"";
+  if(tgt && (tgt.id==="scan" || tag==="INPUT" || tag==="TEXTAREA" || tag==="SELECT")) return;
+  const now=Date.now(); if(now-lastKey>120) buf=""; lastKey=now;
+  if(ev.key==="Enter"){ if(buf.length>=4){ ev.preventDefault(); handleBadge(buf); } buf=""; return; }
+  if(ev.key && ev.key.length===1) buf+=ev.key;
+});
+const scan=$("#scan");
+scan.addEventListener("keydown", ev=>{ if(ev.key==="Enter"){ ev.preventDefault(); const v=scan.value; scan.value=""; handleBadge(v); } });
+scan.addEventListener("focus", ()=>$("#scanbox").classList.add("live"));
+scan.addEventListener("blur", ()=>$("#scanbox").classList.remove("live"));
+
+/* ================= render ================= */
+function avatarHTML(c){
+  const bg=`hsl(${hue(c.id||fullName(c))} 55% 52%)`;
+  if(c.photo) return `<div class="av" style="background:${bg}"><img alt="" data-photo="${esc(c.photo)}"></div>`;
+  const ini=((c.voornaam||"?")[0]+((c.naam||"")[0]||"")).toUpperCase();
+  return `<div class="av" style="background:${bg}">${esc(ini)}</div>`;
+}
+function renderHeader(){
+  $("#today-label").textContent=longDate(S.date);
+  const kids=kidsSorted(); const inside=kids.filter(c=>["in","sleep"].includes(status(c.id).state)).length;
+  $("#count").innerHTML = kids.length ? `<b>${inside}</b> van ${kids.length} binnen` : "";
+}
+function renderRack(){
+  const rack=$("#rack"); const kids=kidsSorted();
+  if(!S.ready){ rack.innerHTML=`<div class="empty" style="grid-column:1/-1">Laden…</div>`; return; }
+  if(!kids.length){ rack.innerHTML=`<div class="empty" style="grid-column:1/-1"><h2>Nog geen kinderen</h2><p>Voeg kinderen toe of importeer een CSV-bestand via Beheer.</p><button class="btn primary" data-act="go-kids">Kind toevoegen</button></div>`; return; }
+  rack.innerHTML=kids.map(c=>{ const st=status(c.id);
+    return `<button class="hook" data-open="${esc(c.id)}" data-state="${st.state}" aria-label="${esc(fullName(c))}, ${esc(st.label)}">
+      <div class="ring">${avatarHTML(c)}</div>${c.allergieen?`<span class="allergy-dot" title="Allergie">!</span>`:""}
+      <span class="nm">${esc(c.voornaam||"")}</span><span class="st">${esc(st.label)}</span></button>`; }).join("");
+}
+function renderKidList(){
+  const l=$("#kidlist"); const kids=kidsSorted();
+  if(!kids.length){ l.innerHTML=`<div class="empty">Nog geen kinderen.</div>`; return; }
+  l.innerHTML=kids.map(c=>`<button class="item" data-edit="${esc(c.id)}">${avatarHTML(c)}
+    <span><b>${esc(fullName(c))}</b><br><span class="sub">${esc(age(c.geboortedatum)||"Geboortedatum ontbreekt")}</span></span>
+    <span class="row" style="justify-content:flex-end">${c.allergieen?`<span class="chip alert">Allergie</span>`:""}${c.badge?`<span class="chip ok">Badge</span>`:`<span class="chip">Geen badge</span>`}</span></button>`).join("");
+}
+function renderAll(){ renderHeader(); renderRack(); renderKidList(); if(S.sheetMode==="child") renderSheet(); hydratePhotos(); }
+
+/* ================= sheet ================= */
+function openSheet(mode){ S.sheetMode=mode; $("#scrim").classList.add("open"); document.body.style.overflow="hidden"; }
+function closeSheet(){ S.sheetMode=null; S.openChild=null; $("#scrim").classList.remove("open"); document.body.style.overflow=""; }
+$("#scrim").addEventListener("click", ev=>{ if(ev.target.id==="scrim") closeSheet(); });
+document.addEventListener("keydown", ev=>{ if(ev.key==="Escape" && S.sheetMode) closeSheet(); });
+
+function openChild(id){ S.openChild=id; openSheet("child"); renderSheet(true); }
+function renderSheet(first){
+  const c=S.children.get(S.openChild); if(!c){ closeSheet(); return; }
+  const keepTime = !first && $("#act-time") ? $("#act-time").value : "";
+  const keepNote = !first && $("#note") ? $("#note").value : "";
+  const keepH = !first && $("#histbox") ? {open:$("#histbox").open, html:$("#hist").innerHTML} : {open:false, html:"Laden…"};
+  const keepR = !first && $("#repbox") ? {open:$("#repbox").open, html:$("#reps").innerHTML} : {open:false, html:"Laden…"};
+  const scrollTop = $("#sheet").scrollTop;
+  const e=entry(c.id); const st=status(c.id);
+  const present = st.state==="in"||st.state==="sleep", sleeping = st.state==="sleep";
+  const items=[];
+  e.sessions.forEach((s,i)=>{ items.push({t:s.in,k:"sessions",i,f:"in",col:"var(--present)",txt:"Binnengekomen"}); if(s.out) items.push({t:s.out,k:"sessions",i,f:"out",col:"var(--away)",txt:"Vertrokken"}); });
+  e.sleeps.forEach((s,i)=>items.push({t:s.start,k:"sleeps",i,col:"var(--sleep)",txt: s.end? "Geslapen tot "+hhmm(s.end)+" ("+dur(s.start,s.end)+")" : "Slaapt"}));
+  e.diapers.forEach((d,i)=>items.push({t:d.t,k:"diapers",i,col:"var(--diaper)",txt:"Verversen: "+d.kind}));
+  e.notes.forEach((n,i)=>items.push({t:n.t,k:"notes",i,col:"var(--muted)",txt:n.text}));
+  items.sort((a,b)=>new Date(a.t)-new Date(b.t));
+  const ringCol = st.state==="in"?"var(--present)":st.state==="sleep"?"var(--sleep)":"var(--line)";
+  const dis = present? "" : "disabled";
+  $("#sheet").innerHTML=`
+  <div class="sh-head"><div class="ring" style="background:${ringCol}">${avatarHTML(c)}</div>
+    <div><h2>${esc(fullName(c))}</h2><div class="sub">${esc(age(c.geboortedatum))}${age(c.geboortedatum)?" – ":""}${esc(st.label)}</div></div>
+    <button class="close" data-act="close" aria-label="Sluiten">×</button></div>
+  ${c.allergieen?`<div class="banner">Allergie: <span>${esc(c.allergieen)}</span></div>`:""}
+  <label class="timefield" style="margin-bottom:12px">Tijdstip <input type="time" id="act-time" value="${esc(keepTime)}"> <span>leeg = nu</span></label>
+  ${present ? `<button class="btn primary big" data-act="out">Vertrek registreren</button>`
+            : `<button class="btn go big" data-act="in">${st.state==="out"?"Opnieuw binnen":"Binnen melden"}</button>`}
+  <div class="block"><h3>Slapen en verversen</h3><div class="row">
+    <button class="btn sleep ${sleeping?"on":""}" data-act="sleep" ${dis}>${sleeping?"Wakker":"Start slaapje"}</button>
+    <button class="btn dia" data-act="dia" data-kind="nat" ${dis}>Nat</button>
+    <button class="btn dia" data-act="dia" data-kind="vuil" ${dis}>Vuil</button>
+    <button class="btn dia" data-act="dia" data-kind="nat en vuil" ${dis}>Nat en vuil</button>
+    <button class="btn dia" data-act="dia" data-kind="droog" ${dis}>Droog</button></div></div>
+  <div class="block"><h3>Notitie</h3>
+    <div class="note-in"><input id="note" placeholder="Bijvoorbeeld: flesje 150 ml, goed gegeten" value="${esc(keepNote)}"><button class="btn small" data-act="note">Toevoegen</button></div></div>
+  <div class="block"><h3>Vandaag</h3>
+    ${items.length? `<ul class="tl">${items.map(it=>`<li><time>${hhmm(it.t)}</time><span><i class="tag" style="background:${it.col}"></i>${esc(it.txt)}</span><button class="x" aria-label="Verwijderen" data-act="del" data-k="${it.k}" data-i="${it.i}" data-f="${it.f||""}">×</button></li>`).join("")}</ul>` : `<p class="sub" style="margin:0">Nog niets geregistreerd vandaag.</p>`}</div>
+  <div class="block">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">Foto’s</h3>
+      <label class="btn small filebtn">Foto toevoegen<input type="file" id="photo-in" accept="image/*" multiple></label></div>
+    ${e.photos.length? `<div class="photos">${e.photos.map((p,i)=>`<figure><img alt="Foto ${i+1}" data-photo="${esc(p.id)}"><figcaption>${hhmm(p.t)}</figcaption><button class="px" data-act="delphoto" data-i="${i}" aria-label="Foto verwijderen">×</button></figure>`).join("")}</div>` : `<p class="sub" style="margin:0">Nog geen foto’s vandaag.</p>`}</div>
+  <div class="block row">
+    <button class="btn" data-act="mail">Dagverslag mailen${e.mailedAt?" (klaargezet "+hhmm(e.mailedAt)+")":""}</button>
+    <button class="btn ghost" data-act="edit">Gegevens bewerken</button></div>
+  <div class="block"><details><summary>Contact en medisch</summary>${contactHTML(c)}</details></div>
+  <div class="block"><details id="repbox"${keepR.open?" open":""}><summary>Verslagen</summary><div id="reps">${keepR.html}</div></details></div>
+  <div class="block"><details id="histbox"${keepH.open?" open":""}><summary>Vorige dagen</summary><div id="hist">${keepH.html}</div></details></div>`;
+  $("#sheet").scrollTop = first? 0 : scrollTop;
+  $("#photo-in").addEventListener("change", ev=>uploadPhotos(c.id, ev.target.files));
+  $("#note").addEventListener("keydown", ev=>{ if(ev.key==="Enter"){ ev.preventDefault(); addNote(c.id); } });
+  const hb=$("#histbox"); hb.addEventListener("toggle", ()=>{ if(hb.open && $("#hist").textContent==="Laden…") loadHistory(c.id); });
+  const rb=$("#repbox"); rb.addEventListener("toggle", ()=>{ if(rb.open && $("#reps").textContent==="Laden…") loadReports(c.id); });
+  hydratePhotos($("#sheet"));
+}
+function tel(n){ return n? `<a href="tel:${esc(String(n).replace(/[^\d+]/g,""))}">${esc(n)}</a>` : "–"; }
+function mailLink(n){ return n? `<a href="mailto:${esc(n)}">${esc(n)}</a>` : "–"; }
+function contactHTML(c){
+  return `<dl class="info">
+    <dt>Adres</dt><dd>${esc(c.adres||"–")}</dd>
+    <dt>Geboortedatum</dt><dd>${esc(c.geboortedatum||"–")}</dd>
+    <dt>${esc(c.ouder1_naam||"Ouder 1")}</dt><dd>${tel(c.ouder1_tel)}<br>${mailLink(c.ouder1_email)}</dd>
+    <dt>${esc(c.ouder2_naam||"Ouder 2")}</dt><dd>${tel(c.ouder2_tel)}<br>${mailLink(c.ouder2_email)}</dd>
+    <dt>Bij nood</dt><dd>${esc(c.nood_naam||"–")}${c.nood_relatie?" ("+esc(c.nood_relatie)+")":""}<br>${tel(c.nood_tel)}</dd>
+    <dt>Huisarts</dt><dd>${esc(c.huisarts||"–")}<br>${tel(c.huisarts_tel)}</dd>
+    <dt>Allergieën</dt><dd>${esc(c.allergieen||"Geen gekend")}</dd></dl>`;
+}
+function addNote(id){ const v=$("#note").value.trim(); if(!v) return; $("#note").value=""; saveEntry(id, e=>e.notes.push({t:at(), text:v})); resetTime(); }
+
+async function uploadPhotos(id, files){
+  if(!files || !files.length) return;
+  toast("Foto’s opslaan…"); let ok=0;
+  for(const f of files){
+    try{ const pid=await storePhoto(f); saveEntry(id, e=>e.photos.push({t:new Date().toISOString(), id:pid})); ok++; }
+    catch(err){ failWrite(err); }
+  }
+  if(ok) toast(ok+(ok===1?" foto toegevoegd":" foto’s toegevoegd"));
+}
+
+async function loadHistory(id){
+  const box=$("#hist");
+  try{
+    const days=(await DB.all("days")).filter(d=>d.date!==S.date && d.kids && d.kids[id]).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,15);
+    if(!days.length){ box.innerHTML=`<p class="sub">Geen eerdere dagen gevonden.</p>`; return; }
+    box.innerHTML=`<div style="overflow-x:auto"><table class="hist"><thead><tr><th>Dag</th><th>In</th><th>Uit</th><th>Slaap</th><th>Verv.</th><th>Foto’s</th></tr></thead><tbody>${days.map(d=>{
+      const e=Object.assign(emptyEntry(), d.kids[id]); const s0=e.sessions[0], sl=e.sessions[e.sessions.length-1];
+      const mins=e.sleeps.filter(x=>x.end).reduce((a,x)=>a+(new Date(x.end)-new Date(x.start))/60000,0);
+      return `<tr><td>${esc(DAYS[parseKey(d.date).getDay()].slice(0,2))} ${esc(shortDate(d.date))}</td><td>${s0?hhmm(s0.in):"–"}</td><td>${sl&&sl.out?hhmm(sl.out):"–"}</td><td>${mins? Math.floor(mins/60)+"u"+pad(Math.round(mins%60)):"–"}</td><td>${e.diapers.length}</td><td>${e.photos.length}</td></tr>`; }).join("")}</tbody></table></div>`;
+  }catch(err){ box.textContent="Kon de geschiedenis niet laden."; }
+}
+
+/* ================= reports ================= */
+const reportKey = (id,date) => id+"|"+date;
+const saveReport = (id,date,data) => DB.put("reports", Object.assign({key:reportKey(id,date), childId:id, date}, data)).catch(failWrite);
+async function loadReports(id){
+  const box=$("#reps");
+  try{
+    const reps=(await DB.byIndex("reports","childId",id)).sort((a,b)=>b.date.localeCompare(a.date));
+    if(!reps.length){ box.innerHTML=`<p class="sub">Nog geen verslagen. Een verslag wordt bewaard zodra het bij vertrek klaargezet wordt.</p>`; return; }
+    box.innerHTML=`<div class="list" style="margin-top:10px">${reps.map(d=>{ const n=(d.photos||[]).length;
+      return `<button class="item rep" data-report="${esc(d.date)}"><span><b>${esc(longDate(d.date))} ${esc(d.date.slice(0,4))}</b><br><span class="sub">${esc(d.status||"")}</span></span><span class="chip">${n} ${n===1?"foto":"foto’s"}</span></button>`; }).join("")}</div>`;
+  }catch(err){ box.textContent="Kon de verslagen niet laden."; }
+}
+async function openReport(id, date){
+  const c=S.children.get(id); if(!c) return;
+  S.openChild=id; openSheet("report");
+  const d=await DB.get("reports", reportKey(id,date)).catch(()=>null);
+  if(S.sheetMode!=="report") return;
+  const sh=$("#sheet");
+  if(!d){ sh.innerHTML=`<div class="empty">Dit verslag werd niet gevonden.<br><br><button class="btn" data-act="back">Terug</button></div>`; return; }
+  const to=d.to||[];
+  sh.innerHTML=`<div class="sh-head"><div><h2>${esc(d.subject||"Dagverslag")}</h2><div class="sub">${esc(d.status||"")}${d.updatedAt? " – laatst bewaard om "+hhmm(d.updatedAt):""}</div></div><button class="close" data-act="close" aria-label="Sluiten">×</button></div>
+    <div class="sub" style="overflow-wrap:anywhere">Aan: ${esc(to.join(", ")||"–")}</div>
+    <pre class="report">${esc(d.body||"")}</pre>
+    ${(d.photos||[]).length? `<div class="photos" style="margin-bottom:14px">${d.photos.map((p,i)=>`<figure><img alt="Foto ${i+1}" data-photo="${esc(p)}"></figure>`).join("")}</div>`:""}
+    <div class="row">
+      <a class="btn go" href="mailto:${esc(to.map(encodeURIComponent).join(","))}?subject=${esc(encodeURIComponent(d.subject||""))}&amp;body=${esc(encodeURIComponent(d.body||""))}">Opnieuw openen in Mail</a>
+      <button class="btn" id="r-dl" type="button">Bewaren als tekst</button>
+      <button class="btn ghost" data-act="back">Terug naar ${esc(c.voornaam)}</button></div>`;
+  $("#r-dl").addEventListener("click", ()=>saveFile(`dagverslag-${safeName(c.voornaam)}-${date}.txt`, new Blob([(d.subject||"")+"\n\n"+(d.body||"")],{type:"text/plain"})));
+  hydratePhotos(sh);
+}
+
+/* ================= mail ================= */
+function mailBody(c, e, date){
+  const L=[]; const s0=e.sessions[0], sl=e.sessions[e.sessions.length-1];
+  L.push("Beste ouders,","",`Hier is het dagverslag van ${c.voornaam} van ${longDate(date)}.`,"");
+  L.push("Aangekomen: "+(s0?hhmm(s0.in):"–"));
+  L.push("Vertrokken: "+(sl&&sl.out?hhmm(sl.out):"nog aanwezig"));
+  L.push("","Slapen");
+  if(e.sleeps.length) e.sleeps.forEach(x=>L.push(`- ${hhmm(x.start)} tot ${x.end?hhmm(x.end)+" ("+dur(x.start,x.end)+")":"…"}`)); else L.push("- niet geslapen");
+  L.push("","Verversen");
+  if(e.diapers.length) e.diapers.slice().sort((a,b)=>new Date(a.t)-new Date(b.t)).forEach(d=>L.push(`- ${hhmm(d.t)} ${d.kind}`)); else L.push("- geen verversing geregistreerd");
+  if(e.notes.length){ L.push("","Notities"); e.notes.slice().sort((a,b)=>new Date(a.t)-new Date(b.t)).forEach(n=>L.push(`- ${hhmm(n.t)} ${n.text}`)); }
+  if(e.photos.length) L.push("",`Vandaag maakten we ${e.photos.length} ${e.photos.length===1?"foto":"foto’s"}.`);
+  L.push("","Tot de volgende keer!", SET.sign||"Het team van de opvang");
+  return L.join("\n");
+}
+let shareFiles=[];
+async function prepareShareFiles(e, c, date){
+  shareFiles=[];
+  for(const [i,p] of e.photos.entries()){
+    const rec=await DB.get("photos",p.id).catch(()=>null);
+    if(rec && rec.blob) shareFiles.push(new File([rec.blob], `${safeName(c.voornaam)}-${date}-${i+1}.jpg`, {type:"image/jpeg"}));
+  }
+  const btn=$("#m-share"); if(!btn) return;
+  let ok=false; try{ ok = shareFiles.length>0 && !!navigator.canShare && navigator.canShare({files:shareFiles}); }catch(_){}
+  btn.classList.toggle("hidden", !ok);
+  btn.textContent=`Delen met ${shareFiles.length} ${shareFiles.length===1?"foto":"foto’s"}`;
+  const hint=$("#m-hint"); if(hint && !ok && e.photos.length) hint.textContent="Foto’s rechtstreeks meesturen lukt niet op dit toestel.";
+}
+async function openMail(id){
+  const c=S.children.get(id); if(!c) return;
+  const e=entry(id); const date=S.date; S.openChild=id; openSheet("mail");
+  const to=[c.ouder1_email,c.ouder2_email].filter(Boolean);
+  const freshSubject=()=>`Dagverslag ${c.voornaam} – ${longDate(date)}`;
+  let subject=freshSubject(), body=mailBody(c,e,date), edited=false, status="klaargezet";
+  const prev=await DB.get("reports", reportKey(id,date)).catch(()=>null);
+  if(prev){ status=prev.status||status; if(prev.edited){ subject=prev.subject; body=prev.body; edited=true; } }
+  if(S.sheetMode!=="mail" || S.openChild!==id) return;
+  $("#sheet").innerHTML=`
+    <div class="sh-head"><div><h2>Dagverslag ${esc(c.voornaam)}</h2><div class="sub">Wordt automatisch bewaard bij ${esc(c.voornaam)}.</div></div><button class="close" data-act="close" aria-label="Sluiten">×</button></div>
+    <div class="mailbox">
+      <div class="sub" style="margin-bottom:8px;overflow-wrap:anywhere">Aan: ${to.length? esc(to.join(", ")) : `<b style="color:var(--alert)">geen e-mailadres van de ouders ingevuld</b>`}</div>
+      <label class="f wide">Onderwerp<input id="m-subj" value="${esc(subject)}"></label>
+      <label class="f wide" style="margin-top:10px">Bericht<textarea id="m-body">${esc(body)}</textarea></label>
+    </div>
+    <p id="m-edited" class="row${edited?"":" hidden"} sub">Dit is de aangepaste tekst. <button class="btn small ghost" id="m-refresh" type="button">Opnieuw opbouwen uit vandaag</button></p>
+    ${e.photos.length?`<p id="m-hint" class="sub">Met Delen gaan tekst en foto’s samen naar Mail. Kies daar de ouders als ontvanger.</p>`:""}
+    <div class="row" style="margin-top:14px">
+      <button class="btn go hidden" id="m-share" type="button">Delen met foto’s</button>
+      <a class="btn ${e.photos.length?"":"go"}" id="m-open">Openen in Mail${e.photos.length?" zonder foto’s":""}</a>
+      <button class="btn" data-act="copy">Tekst kopiëren</button>
+      <button class="btn ghost" data-act="back">Terug naar ${esc(c.voornaam)}</button>
+    </div>`;
+  const subj=$("#m-subj"), bd=$("#m-body");
+  const record=()=>({to, subject:subj.value, body:bd.value, photos:e.photos.map(p=>p.id), status, edited, updatedAt:new Date().toISOString()});
+  const upd=()=>{ $("#m-open").href=`mailto:${to.map(encodeURIComponent).join(",")}?subject=${encodeURIComponent(subj.value)}&body=${encodeURIComponent(bd.value)}`; };
+  upd(); saveReport(id,date,record());
+  let tmr;
+  const onEdit=()=>{ upd(); if(!edited){ edited=true; $("#m-edited").classList.remove("hidden"); } clearTimeout(tmr); tmr=setTimeout(()=>saveReport(id,date,record()),800); };
+  subj.addEventListener("input",onEdit); bd.addEventListener("input",onEdit);
+  $("#m-refresh").addEventListener("click", ()=>{ clearTimeout(tmr); subj.value=freshSubject(); bd.value=mailBody(c,entry(id),date); edited=false; $("#m-edited").classList.add("hidden"); upd(); saveReport(id,date,record()); });
+  const markSent=st=>{ clearTimeout(tmr); status=st; saveReport(id,date,record()); saveEntry(id, x=>{ x.mailedAt=new Date().toISOString(); }); };
+  $("#m-open").addEventListener("click", ()=>markSent("geopend in Mail"));
+  $("#m-share").addEventListener("click", async ()=>{
+    try{ await navigator.share({title:subj.value, text:subj.value+"\n\n"+bd.value, files:shareFiles}); markSent("gedeeld met foto’s"); }
+    catch(err){ if(err && err.name==="AbortError") return; toast("Delen met foto’s lukte niet op dit toestel."); }
+  });
+  prepareShareFiles(e, c, date);
+}
+
+/* ================= unknown badge ================= */
+function openLinkBadge(code){
+  openSheet("link");
+  const kids=kidsSorted().filter(c=>!c.badge);
+  $("#sheet").innerHTML=`<div class="sh-head"><div><h2>Onbekende badge</h2><div class="sub">Badge ${esc(code)} is nog aan geen enkel kind gekoppeld.</div></div><button class="close" data-act="close" aria-label="Sluiten">×</button></div>
+  ${kids.length? `<p>Kies het kind dat deze badge krijgt:</p><div class="list">${kids.map(c=>`<button class="item" data-link="${esc(c.id)}" data-code="${esc(code)}">${avatarHTML(c)}<span><b>${esc(fullName(c))}</b></span><span></span></button>`).join("")}</div>` : `<p>Alle kinderen hebben al een badge. Pas een badge aan via Gegevens bewerken.</p>`}`;
+  hydratePhotos($("#sheet"));
+}
+
+/* ================= child form (de bron) ================= */
+const FIELDS=[
+ ["Kind",[["voornaam","Voornaam","text",1],["naam","Naam","text",1],["geboortedatum","Geboortedatum","date"],["adres","Adres","text",0,1]]],
+ ["Ouder 1",[["ouder1_naam","Naam","text"],["ouder1_tel","Telefoon","tel"],["ouder1_email","E-mail","email",0,1]]],
+ ["Ouder 2",[["ouder2_naam","Naam","text"],["ouder2_tel","Telefoon","tel"],["ouder2_email","E-mail","email",0,1]]],
+ ["Contactpersoon bij nood",[["nood_naam","Naam en voornaam","text"],["nood_relatie","Relatie","text"],["nood_tel","Telefoon","tel"]]],
+ ["Huisarts",[["huisarts","Naam huisarts","text"],["huisarts_tel","Telefoon","tel"]]],
+];
+function openForm(id){
+  const c = id ? S.children.get(id) : {};
+  S.openChild=id||null; openSheet("form");
+  $("#sheet").innerHTML=`<div class="sh-head"><div><h2>${id?esc(fullName(c)):"Nieuw kind"}</h2><div class="sub">Deze gegevens voeden de hele app.</div></div><button class="close" data-act="close" aria-label="Sluiten">×</button></div>
+  <form id="kidform" novalidate>
+   ${FIELDS.map(([lg,fs])=>`<fieldset><legend>${lg}</legend><div class="grid">${fs.map(([k,l,t,req,wide])=>`<label class="f${wide?" wide":""}">${l}${req?" *":""}<input name="${k}" type="${t}" value="${esc(c[k]||"")}" ${t==="email"?'autocapitalize="off"':""}></label>`).join("")}</div></fieldset>`).join("")}
+   <fieldset><legend>Allergieën</legend><label class="f wide"><textarea name="allergieen" rows="2" placeholder="Leeg laten als er geen gekend zijn">${esc(c.allergieen||"")}</textarea></label></fieldset>
+   <fieldset><legend>Badge en foto</legend><div class="grid">
+     <label class="f">Badgecode<input id="f-badge" name="badge" value="${esc(c.badge||"")}" placeholder="Scan de badge nu" autocapitalize="characters"></label>
+     <label class="f">Profielfoto<input type="file" id="f-photo" accept="image/*"></label>
+   </div></fieldset>
+   <div class="row" style="justify-content:space-between">
+     ${id?`<button type="button" class="btn danger" data-act="delete-kid">Kind verwijderen</button>`:"<span></span>"}
+     <div class="row"><button type="button" class="btn ghost" data-act="close">Annuleren</button><button class="btn primary" type="submit">Opslaan</button></div>
+   </div>
+  </form>`;
+  $("#kidform").addEventListener("submit", ev=>{ ev.preventDefault(); saveKid(id, ev.target); });
+}
+async function saveKid(id, form){
+  const fd=new FormData(form); const data={};
+  for(const [k,v] of fd.entries()){ if(typeof v==="string") data[k]=v.trim(); }
+  if(!data.voornaam||!data.naam){ toast("Vul voornaam en naam in."); return; }
+  data.badge=normBadge(data.badge);
+  if(data.badge){ const dup=kidsSorted().find(c=>c.id!==id && normBadge(c.badge)===data.badge); if(dup){ toast("Deze badge hoort al bij "+fullName(dup)+"."); return; } }
+  const newId=id||uid(); const old=id? S.children.get(id):{};
+  data.id=newId; data.photo=old.photo||null;
+  try{
+    const pf=$("#f-photo"); if(pf && pf.files && pf.files[0]) data.photo=await storePhoto(pf.files[0]);
+    data.updatedAt=new Date().toISOString();
+    await DB.put("children", data); S.children.set(newId, data);
+    toast(data.voornaam+" is opgeslagen"); closeSheet(); renderAll();
+  }catch(err){ failWrite(err); }
+}
+
+/* ================= CSV ================= */
+const CSV_COLS=["voornaam","naam","geboortedatum","adres","ouder1_naam","ouder1_email","ouder1_tel","ouder2_naam","ouder2_email","ouder2_tel","nood_naam","nood_relatie","nood_tel","huisarts","huisarts_tel","allergieen","badge"];
+function parseCSV(text){
+  text=text.replace(/^\uFEFF/,"");
+  const first=text.split(/\r?\n/)[0]||""; const sep=(first.split(";").length>=first.split(",").length)?";":",";
+  const rows=[]; let row=[], cur="", q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=ch; }
+    else if(ch==='"') q=true;
+    else if(ch===sep){ row.push(cur); cur=""; }
+    else if(ch==="\n"||ch==="\r"){ if(ch==="\r"&&text[i+1]==="\n") i++; row.push(cur); rows.push(row); row=[]; cur=""; }
+    else cur+=ch;
+  }
+  if(cur||row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(r=>r.some(c=>c.trim()));
+}
+const csvCell = v => { v=String(v??""); return /[;"\n]/.test(v)? '"'+v.replace(/"/g,'""')+'"' : v; };
+const toCSV = list => "\uFEFF"+[CSV_COLS.join(";"), ...list.map(c=>CSV_COLS.map(k=>csvCell(c[k])).join(";"))].join("\r\n");
+$("#csv-in").addEventListener("change", async ev=>{
+  const f=ev.target.files[0]; ev.target.value=""; if(!f) return;
+  const rows=parseCSV(await f.text()); if(rows.length<2){ toast("Het bestand bevat geen kinderen."); return; }
+  const head=rows[0].map(h=>h.trim().toLowerCase());
+  if(!head.includes("voornaam")||!head.includes("naam")){ toast("Kolommen voornaam en naam ontbreken. Gebruik het sjabloon."); return; }
+  let added=0, updated=0;
+  for(const r of rows.slice(1)){
+    const d={}; head.forEach((h,i)=>{ if(CSV_COLS.includes(h)) d[h]=(r[i]||"").trim(); });
+    if(!d.voornaam||!d.naam) continue;
+    d.badge=normBadge(d.badge);
+    const match=kidsSorted().find(c=>(d.badge && normBadge(c.badge)===d.badge) || (c.voornaam===d.voornaam && c.naam===d.naam && (c.geboortedatum||"")===(d.geboortedatum||"")));
+    const data=Object.assign({}, match||{}, d, {id: match? match.id : uid(), updatedAt:new Date().toISOString()});
+    try{ await DB.put("children",data); S.children.set(data.id,data); match? updated++ : added++; }
+    catch(err){ failWrite(err); break; }
+  }
+  renderAll(); toast(`${added} toegevoegd, ${updated} bijgewerkt`);
+});
+
+/* ================= backup ================= */
+function checkBackupAge(){
+  const last=localStorage.getItem("kapstok.lastBackup");
+  $("#last-backup").textContent = last? "Laatste back-up: "+new Date(last).toLocaleString("nl-BE") : "Er werd nog geen back-up gemaakt.";
+  const old = !last || (Date.now()-new Date(last))>7*864e5;
+  if(S.children.size && old) notice(`<span>${last? "Er is al meer dan een week geen back-up gemaakt" : "Er is nog geen back-up gemaakt"} van de gegevens op dit toestel.</span><button class="btn small" data-act="go-admin">Back-up maken</button>`);
+  else notice("");
+}
+async function buildBackup(photoDays){
+  const [children, days, reports, photos]=await Promise.all([DB.all("children"),DB.all("days"),DB.all("reports"),DB.all("photos")]);
+  const out=[];
+  if(photoDays>0){
+    const since=Date.now()-photoDays*864e5;
+    const keep=new Set(children.map(c=>c.photo).filter(Boolean));
+    for(const p of photos){ if(keep.has(p.id) || new Date(p.createdAt).getTime()>=since) out.push({id:p.id, createdAt:p.createdAt, data:await blobToDataURL(p.blob)}); }
+  }
+  return new Blob([JSON.stringify({app:"kapstok", version:1, exportedAt:new Date().toISOString(), children, days, reports, photos:out})], {type:"application/json"});
+}
+async function makeBackup(photoDays){
+  const box=$("#backup-ready"); box.innerHTML=`<span class="sub">Back-up voorbereiden…</span>`;
+  try{
+    const blob=await buildBackup(photoDays);
+    const name=`kapstok-backup-${dayKey()}${photoDays?"-met-fotos":""}.json`;
+    box.innerHTML=`<button class="btn go" id="bk-save" type="button">Back-up bewaren (${(blob.size/1048576).toFixed(1)} MB)</button>`;
+    $("#bk-save").addEventListener("click", async ()=>{ await saveFile(name, blob); localStorage.setItem("kapstok.lastBackup", new Date().toISOString()); checkBackupAge(); box.innerHTML=""; });
+  }catch(err){ box.innerHTML=""; toast("De back-up kon niet gemaakt worden."); }
+}
+$("#restore-in").addEventListener("change", async ev=>{
+  const f=ev.target.files[0]; ev.target.value=""; if(!f) return;
+  let data; try{ data=JSON.parse(await f.text()); }catch(_){ toast("Dit is geen geldig back-upbestand."); return; }
+  if(!data || data.app!=="kapstok"){ toast("Dit is geen Kapstok-back-up."); return; }
+  if(!confirm(`Back-up van ${new Date(data.exportedAt).toLocaleString("nl-BE")} terugzetten?\nKinderen, dagen en verslagen uit de back-up overschrijven dezelfde gegevens op dit toestel.`)) return;
+  toast("Back-up terugzetten…");
+  try{
+    for(const c of data.children||[]) await DB.put("children",c);
+    for(const d of data.days||[]) await DB.put("days",d);
+    for(const r of data.reports||[]) await DB.put("reports",r);
+    for(const p of data.photos||[]){ const blob=await (await fetch(p.data)).blob(); await DB.put("photos",{id:p.id, blob, createdAt:p.createdAt}); }
+    urlCache.clear(); await loadAll(); toast("Back-up teruggezet");
+  }catch(err){ failWrite(err); }
+});
+async function storageInfo(){
+  const el=$("#storage-info"); let txt="";
+  try{
+    if(navigator.storage && navigator.storage.estimate){ const e=await navigator.storage.estimate(); txt+=`In gebruik: ${((e.usage||0)/1048576).toFixed(1)} MB. `; }
+    if(navigator.storage && navigator.storage.persisted){ const p=await navigator.storage.persisted(); txt+= p? "De gegevens zijn beschermd tegen automatisch opruimen." : "Gebruik Kapstok via het icoon op het beginscherm, zodat iOS de gegevens niet opruimt."; }
+  }catch(_){}
+  el.textContent=txt||"Geen informatie beschikbaar.";
+}
+
+/* ================= click routing ================= */
+function showTab(name){
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", String(t.dataset.tab===name)));
+  ["today","kids","admin"].forEach(n=>$("#view-"+n).classList.toggle("hidden", n!==name));
+  if(name==="admin"){ storageInfo(); checkBackupAge(); }
+}
+document.addEventListener("click", ev=>{
+  const b=ev.target.closest("[data-open],[data-edit],[data-act],[data-link],[data-tab],[data-report]"); if(!b) return;
+  if(b.dataset.tab){ showTab(b.dataset.tab); return; }
+  if(b.dataset.open){ openChild(b.dataset.open); return; }
+  if(b.dataset.edit){ openForm(b.dataset.edit); return; }
+  if(b.dataset.report){ openReport(S.openChild, b.dataset.report); return; }
+  if(b.dataset.link){ const c=S.children.get(b.dataset.link); if(!c) return;
+    const data=Object.assign({}, c, {badge:normBadge(b.dataset.code), updatedAt:new Date().toISOString()});
+    DB.put("children",data).then(()=>{ S.children.set(c.id,data); toast("Badge gekoppeld aan "+c.voornaam); closeSheet(); renderAll(); }, failWrite); return; }
+  const id=S.openChild, a=b.dataset.act;
+  switch(a){
+    case "close": closeSheet(); break;
+    case "go-kids": showTab("kids"); openForm(null); break;
+    case "go-admin": showTab("admin"); break;
+    case "new-kid": openForm(null); break;
+    case "in": checkIn(id, at()); toast(S.children.get(id).voornaam+" is binnen"); resetTime(); break;
+    case "out": { const t=at(); checkOut(id,t); resetTime(); openMail(id); break; }
+    case "sleep": { const t=at(); saveEntry(id,e=>{ const s=e.sleeps[e.sleeps.length-1]; if(s&&!s.end) s.end=t; else e.sleeps.push({start:t,end:null}); }); resetTime(); break; }
+    case "dia": saveEntry(id,e=>e.diapers.push({t:at(), kind:b.dataset.kind})); toast("Verversen: "+b.dataset.kind); resetTime(); break;
+    case "note": addNote(id); break;
+    case "del": { const k=b.dataset.k, i=+b.dataset.i, f=b.dataset.f;
+      if(!confirm("Deze registratie verwijderen?")) break;
+      saveEntry(id,e=>{ if(k==="sessions"&&f==="out") e.sessions[i].out=null; else e[k].splice(i,1); }); break; }
+    case "delphoto": { const i=+b.dataset.i; const p=entry(id).photos[i]; if(!p) break;
+      if(!confirm("Deze foto definitief verwijderen?")) break;
+      saveEntry(id,e=>e.photos.splice(i,1)); DB.del("photos",p.id).catch(()=>{}); break; }
+    case "mail": openMail(id); break;
+    case "back": openChild(id); break;
+    case "edit": openForm(id); break;
+    case "copy": { const t=$("#m-body"); const txt=$("#m-subj").value+"\n\n"+t.value;
+      (navigator.clipboard? navigator.clipboard.writeText(txt) : Promise.reject()).then(()=>toast("Tekst gekopieerd"), ()=>{ t.select(); toast("Selecteer en kopieer de tekst"); }); break; }
+    case "delete-kid": { const c=S.children.get(id); if(!c) break;
+      if(!confirm(fullName(c)+" verwijderen uit de lijst? De dagregistraties en verslagen blijven bewaard.")) break;
+      DB.del("children",id).then(()=>{ S.children.delete(id); toast(c.voornaam+" is verwijderd"); closeSheet(); renderAll(); }, failWrite); break; }
+    case "backup": makeBackup(+b.dataset.photos); break;
+    case "csv-export": saveFile("kinderen-"+dayKey()+".csv", new Blob([toCSV(kidsSorted())],{type:"text/csv"})); break;
+    case "csv-template": saveFile("kinderen-sjabloon.csv", new Blob([toCSV([])],{type:"text/csv"})); break;
+  }
+});
+const sign=$("#set-sign"); sign.value=SET.sign||""; sign.addEventListener("change", ()=>{ SET.sign=sign.value.trim(); saveSet(); toast("Ondertekening bewaard"); });
+
+/* ================= start ================= */
+renderAll();
+if(location.protocol==="file:"){ notice("<span>Open Kapstok via een webadres (https), niet als los bestand. Zie de installatie-instructies.</span>"); }
+if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost")){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+if(navigator.storage && navigator.storage.persist){ navigator.storage.persist().catch(()=>{}); }
+DB.open().then(loadAll).catch(()=>{ S.ready=true; notice("<span>De opslag op dit toestel kon niet geopend worden. Controleer of privé-navigatie uit staat.</span>"); renderAll(); });
+setInterval(async ()=>{ const k=dayKey(); if(k!==S.date){ S.date=k; S.day=(await DB.get("days",k).catch(()=>null))||{date:k,kids:{}}; renderAll(); } else renderHeader(); }, 60000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+KAPSTOK – lokale versie
+
+Bestanden: index.html, sw.js, manifest.webmanifest en drie iconen.
+Zet ze samen in één map op een webserver met HTTPS (GitHub Pages,
+Netlify, of een eigen server achter een reverse proxy met certificaat).
+
+Belangrijk:
+- De webserver levert alleen de app. Gegevens en foto's van de kinderen
+  worden NOOIT naar de server gestuurd; ze blijven op elk toestel zelf.
+- Elk toestel heeft zijn eigen gegevens. Er is geen synchronisatie.
+- Maak wekelijks een back-up via Beheer.
+- Na een aanpassing van de app: verhoog CACHE in sw.js (kapstok-v2, ...).
