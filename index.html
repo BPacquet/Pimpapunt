@@ -256,6 +256,18 @@ textarea{resize:vertical}
 .lang{display:flex;gap:2px;background:var(--sunk);border-radius:999px;padding:4px;align-self:center}
 .lang button{border:0;background:none;font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted);padding:6px 10px;border-radius:999px;cursor:pointer;min-width:42px;min-height:36px}
 .lang button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 2px 0 var(--line)}
+
+.btn.food{background:var(--present-soft);color:var(--present-dark);--shade:color-mix(in srgb,var(--present) 35%,var(--present-soft))}
+.btn.food.on{background:var(--present);color:#fff;--shade:var(--present-dark)}
+@media (prefers-color-scheme: dark){.btn.food{color:var(--present)}.btn.food.on{color:#fff}}
+.foodbox{margin-top:12px;background:var(--wall);border-radius:20px;padding:14px 16px}
+.amount{display:flex;align-items:center;justify-content:center;gap:16px}
+.amount output{font-family:var(--display);font-weight:600;font-size:32px;min-width:130px;text-align:center;color:var(--ink)}
+.step{width:54px;height:54px;border-radius:50%;border:0;background:var(--surface);font-family:var(--display);font-size:28px;font-weight:600;color:var(--ink);box-shadow:0 3px 0 var(--line);cursor:pointer}
+.step:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.step:disabled{opacity:.4}
+input.food-range{width:100%;margin:14px 0 4px;accent-color:var(--present);height:34px}
+.range-scale{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;font-family:var(--display)}
 label.f select{border:2px solid var(--line);background:var(--wall);border-radius:14px;padding:10px 12px;color:var(--ink);font-size:17px;min-height:48px;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 14px) 21px;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid2 .mt{color:var(--ink);font-family:var(--display);font-weight:600;font-size:17px;min-height:48px;display:flex;align-items:center}
@@ -348,7 +360,7 @@ st_absent:"Nog niet binnen",st_out:"Vertrokken {t}",st_sleep:"Slaapt sinds {t}",
 empty_title:"Nog geen kinderen",empty_text:"Voeg een kind toe, of importeer de kinderlijst via Beheer.",add_kid:"Kind toevoegen",loading:"Laden…",no_kids:"Nog geen kinderen.",no_birth:"Geboortedatum ontbreekt",
 chip_allergy:"Allergie",chip_badge:"Badge",chip_nobadge:"Geen badge",close:"Sluiten",allergy:"Allergie",time:"Tijdstip",time_hint:"leeg = nu",
 btn_out:"Vertrek registreren",btn_in:"Binnen melden",btn_in_again:"Opnieuw binnen",h_sleepdia:"Slapen en verversen",sleep_start:"🌙 Start slaapje",sleep_end:"☀️ Wakker",
-dia_wet:"Nat",dia_dirty:"Vuil",dia_both:"Nat en vuil",dia_dry:"Droog",h_note:"Notitie",note_ph:"Bijvoorbeeld: flesje 150 ml, goed gegeten",add:"Toevoegen",h_today:"Vandaag",
+dia_wet:"Nat",dia_dirty:"Vuil",dia_both:"Nat en vuil",dia_dry:"Droog",h_note:"Notitie",note_ph:"Bijvoorbeeld: goedgezind, veel buiten gespeeld",add:"Toevoegen",h_today:"Vandaag",
 tl_in:"Binnengekomen",tl_out:"Vertrokken",tl_slept:"Geslapen tot {t} ({d})",tl_sleeping:"Slaapt",tl_dia:"Verversen: {k}",nothing_today:"Nog niets geregistreerd vandaag.",delete:"Verwijderen",
 h_photos:"Foto’s",add_photo:"Foto toevoegen",no_photos:"Nog geen foto’s vandaag.",photo:"Foto",del_photo:"Foto verwijderen",photo_1:"{n} foto",photo_n:"{n} foto’s",
 mail_report:"Dagverslag mailen",mail_ready_at:" (klaargezet {t})",edit_kid:"Gegevens bewerken",h_contact:"Contact en medisch",h_reports:"Verslagen",h_history:"Vorige dagen",
@@ -380,6 +392,7 @@ a_backup_h:"Back-up",a_backup_p:"Alle gegevens staan alleen op dit toestel. Gaat
 a_backup_nophotos:"Back-up zonder foto’s",a_backup_photos:"Met foto’s van de laatste 30 dagen",a_restore:"Back-up terugzetten",a_csv_h:"Kinderlijst als CSV",
 a_csv_p:"Vul de kinderlijst in Excel in en importeer ze hier. Gebruik het lege sjabloon voor de juiste kolommen. Bestaande kinderen worden herkend op badge of op naam en geboortedatum.",
 a_csv_import:"CSV importeren",a_csv_export:"CSV exporteren",a_csv_template:"Leeg sjabloon",a_report_h:"Dagverslag",a_sign:"Ondertekening onderaan elk dagverslag (leeg = standaardtekst in de taal van het verslag)",a_sign_ph:"Het team van de opvang",a_storage_h:"Opslag op dit toestel",
+h_food:"Eten",food_bottle:"🍼 Flesje",food_potato:"🥔 Aardappeltjes",food_fruit:"🍎 Fruitpap",food_pick:"Kies wat het kind at of dronk.",food_note:"Notitie bij de fruitpap",food_note_ph:"Bijvoorbeeld: alles opgegeten, met banaan",food_add:"Maaltijd toevoegen",tl_bottle:"Flesje: {n} ml",tl_potato:"Aardappeltjes: {n} g",tl_fruit:"Fruitpap",
 age_m1:"{n} maand",age_mn:"{n} maanden",age_y:"{n} jaar"},
 
 fr:{lang_label:"Langue",tab_today:"Aujourd’hui",tab_kids:"Enfants",tab_admin:"Gestion",scan_ph:"Scanner un badge",
@@ -388,7 +401,7 @@ st_absent:"Pas encore là",st_out:"Départ {t}",st_sleep:"Sieste depuis {t}",st_
 empty_title:"Aucun enfant pour l’instant",empty_text:"Ajoutez un enfant ou importez la liste via Gestion.",add_kid:"Ajouter un enfant",loading:"Chargement…",no_kids:"Aucun enfant.",no_birth:"Date de naissance manquante",
 chip_allergy:"Allergie",chip_badge:"Badge",chip_nobadge:"Pas de badge",close:"Fermer",allergy:"Allergie",time:"Heure",time_hint:"vide = maintenant",
 btn_out:"Enregistrer le départ",btn_in:"Enregistrer l’arrivée",btn_in_again:"De retour",h_sleepdia:"Sieste et changes",sleep_start:"🌙 Début de sieste",sleep_end:"☀️ Réveil",
-dia_wet:"Mouillé",dia_dirty:"Selles",dia_both:"Mouillé et selles",dia_dry:"Sec",h_note:"Remarque",note_ph:"Par exemple : biberon 150 ml, a bien mangé",add:"Ajouter",h_today:"Aujourd’hui",
+dia_wet:"Mouillé",dia_dirty:"Selles",dia_both:"Mouillé et selles",dia_dry:"Sec",h_note:"Remarque",note_ph:"Par exemple : de bonne humeur, beaucoup joué dehors",add:"Ajouter",h_today:"Aujourd’hui",
 tl_in:"Arrivée",tl_out:"Départ",tl_slept:"Sieste jusqu’à {t} ({d})",tl_sleeping:"Sieste en cours",tl_dia:"Change : {k}",nothing_today:"Rien d’enregistré aujourd’hui.",delete:"Supprimer",
 h_photos:"Photos",add_photo:"Ajouter une photo",no_photos:"Pas encore de photos aujourd’hui.",photo:"Photo",del_photo:"Supprimer la photo",photo_1:"{n} photo",photo_n:"{n} photos",
 mail_report:"Envoyer le compte rendu",mail_ready_at:" (préparé à {t})",edit_kid:"Modifier la fiche",h_contact:"Contact et médical",h_reports:"Comptes rendus",h_history:"Jours précédents",
@@ -420,6 +433,7 @@ a_backup_h:"Sauvegarde",a_backup_p:"Toutes les données se trouvent uniquement s
 a_backup_nophotos:"Sauvegarde sans photos",a_backup_photos:"Avec les photos des 30 derniers jours",a_restore:"Restaurer une sauvegarde",a_csv_h:"Liste des enfants en CSV",
 a_csv_p:"Remplissez la liste dans Excel et importez-la ici. Utilisez le modèle vide pour avoir les bonnes colonnes. Les enfants existants sont reconnus par badge ou par nom et date de naissance.",
 a_csv_import:"Importer un CSV",a_csv_export:"Exporter en CSV",a_csv_template:"Modèle vide",a_report_h:"Compte rendu",a_sign:"Signature en bas de chaque compte rendu (vide = texte standard dans la langue du compte rendu)",a_sign_ph:"L’équipe de la crèche",a_storage_h:"Stockage sur cet appareil",
+h_food:"Repas",food_bottle:"🍼 Biberon",food_potato:"🥔 Pommes de terre",food_fruit:"🍎 Compote de fruits",food_pick:"Choisissez ce que l’enfant a mangé ou bu.",food_note:"Remarque sur la compote",food_note_ph:"Par exemple : tout mangé, avec de la banane",food_add:"Ajouter le repas",tl_bottle:"Biberon : {n} ml",tl_potato:"Pommes de terre : {n} g",tl_fruit:"Compote de fruits",
 age_m1:"{n} mois",age_mn:"{n} mois",age_y:"{n} an",age_yn:"{n} ans"},
 
 en:{lang_label:"Language",tab_today:"Today",tab_kids:"Children",tab_admin:"Settings",scan_ph:"Scan badge",
@@ -428,7 +442,7 @@ st_absent:"Not here yet",st_out:"Left {t}",st_sleep:"Asleep since {t}",st_in:"In
 empty_title:"No children yet",empty_text:"Add a child, or import the list under Settings.",add_kid:"Add child",loading:"Loading…",no_kids:"No children yet.",no_birth:"Date of birth missing",
 chip_allergy:"Allergy",chip_badge:"Badge",chip_nobadge:"No badge",close:"Close",allergy:"Allergy",time:"Time",time_hint:"empty = now",
 btn_out:"Check out",btn_in:"Check in",btn_in_again:"Back in",h_sleepdia:"Sleep and changes",sleep_start:"🌙 Start nap",sleep_end:"☀️ Awake",
-dia_wet:"Wet",dia_dirty:"Dirty",dia_both:"Wet and dirty",dia_dry:"Dry",h_note:"Note",note_ph:"For example: bottle 150 ml, ate well",add:"Add",h_today:"Today",
+dia_wet:"Wet",dia_dirty:"Dirty",dia_both:"Wet and dirty",dia_dry:"Dry",h_note:"Note",note_ph:"For example: in a great mood, played outside a lot",add:"Add",h_today:"Today",
 tl_in:"Arrived",tl_out:"Left",tl_slept:"Slept until {t} ({d})",tl_sleeping:"Sleeping",tl_dia:"Change: {k}",nothing_today:"Nothing recorded today.",delete:"Delete",
 h_photos:"Photos",add_photo:"Add photo",no_photos:"No photos today yet.",photo:"Photo",del_photo:"Delete photo",photo_1:"{n} photo",photo_n:"{n} photos",
 mail_report:"Email daily report",mail_ready_at:" (prepared {t})",edit_kid:"Edit details",h_contact:"Contact and medical",h_reports:"Reports",h_history:"Previous days",
@@ -460,6 +474,7 @@ a_backup_h:"Backup",a_backup_p:"All data is stored only on this device. If the d
 a_backup_nophotos:"Backup without photos",a_backup_photos:"With photos from the last 30 days",a_restore:"Restore backup",a_csv_h:"Children list as CSV",
 a_csv_p:"Fill in the list in Excel and import it here. Use the empty template for the right columns. Existing children are matched by badge or by name and date of birth.",
 a_csv_import:"Import CSV",a_csv_export:"Export CSV",a_csv_template:"Empty template",a_report_h:"Daily report",a_sign:"Signature at the bottom of each report (empty = standard text in the report’s language)",a_sign_ph:"The daycare team",a_storage_h:"Storage on this device",
+h_food:"Food",food_bottle:"🍼 Bottle",food_potato:"🥔 Potatoes",food_fruit:"🍎 Fruit purée",food_pick:"Choose what the child ate or drank.",food_note:"Note about the fruit purée",food_note_ph:"For example: ate it all, with banana",food_add:"Add meal",tl_bottle:"Bottle: {n} ml",tl_potato:"Potatoes: {n} g",tl_fruit:"Fruit purée",
 age_m1:"{n} month",age_mn:"{n} months",age_y:"{n} year",age_yn:"{n} years"}
 };
 /* the daily report, written in the child's language */
@@ -467,14 +482,17 @@ const MAIL={
   nl:{subject:"Dagverslag {n} – {d}",hello:"Beste ouders,",intro:"Hier is het dagverslag van {n} van {d}.",arrived:"Aangekomen",left:"Vertrokken",still:"nog aanwezig",
       sleep:"Slapen",sleep_line:"{a} tot {b} ({d})",no_sleep:"niet geslapen",dia:"Verversen",no_dia:"geen verversing geregistreerd",notes:"Notities",
       photos_1:"Vandaag maakten we 1 foto.",photos_n:"Vandaag maakten we {n} foto’s.",bye:"Tot de volgende keer!",sign:"Het team van de opvang",
+      food:"Eten",bottle:"flesje {n} ml",potato:"aardappeltjes {n} g",fruit:"fruitpap",
       kinds:{wet:"nat",dirty:"vuil",both:"nat en vuil",dry:"droog"}},
   fr:{subject:"Compte rendu de {n} – {d}",hello:"Chers parents,",intro:"Voici le compte rendu de la journée de {n}, {d}.",arrived:"Arrivée",left:"Départ",still:"encore à la crèche",
       sleep:"Sieste",sleep_line:"de {a} à {b} ({d})",no_sleep:"pas de sieste",dia:"Changes",no_dia:"aucun change enregistré",notes:"Remarques",
       photos_1:"Aujourd’hui, nous avons pris 1 photo.",photos_n:"Aujourd’hui, nous avons pris {n} photos.",bye:"À bientôt !",sign:"L’équipe de la crèche",
+      food:"Repas",bottle:"biberon {n} ml",potato:"pommes de terre {n} g",fruit:"compote de fruits",
       kinds:{wet:"mouillé",dirty:"selles",both:"mouillé et selles",dry:"sec"}},
   en:{subject:"Daily report {n} – {d}",hello:"Dear parents,",intro:"Here is {n}’s daily report for {d}.",arrived:"Arrived",left:"Left",still:"still here",
       sleep:"Sleep",sleep_line:"{a} to {b} ({d})",no_sleep:"no nap",dia:"Nappy changes",no_dia:"no changes recorded",notes:"Notes",
       photos_1:"Today we took 1 photo.",photos_n:"Today we took {n} photos.",bye:"See you next time!",sign:"The daycare team",
+      food:"Meals",bottle:"bottle {n} ml",potato:"potatoes {n} g",fruit:"fruit purée",
       kinds:{wet:"wet",dirty:"dirty",both:"wet and dirty",dry:"dry"}}
 };
 /* stored diaper values are the original Dutch words; map them to keys */
@@ -625,9 +643,9 @@ async function saveFile(name, blob){
 const blobToDataURL = b => new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); r.readAsDataURL(b); });
 
 /* ================= state ================= */
-const S = { children:new Map(), day:null, date:dayKey(), openChild:null, sheetMode:null, ready:false };
+const S = { drafts:{}, children:new Map(), day:null, date:dayKey(), openChild:null, sheetMode:null, ready:false };
 const kidsSorted = () => [...S.children.values()].sort((a,b)=>(a.voornaam||"").localeCompare(b.voornaam||"","nl"));
-const emptyEntry = () => ({ sessions:[], sleeps:[], diapers:[], notes:[], photos:[], mailedAt:null });
+const emptyEntry = () => ({ sessions:[], sleeps:[], diapers:[], meals:[], notes:[], photos:[], mailedAt:null });
 function entry(id){ const e=S.day && S.day.kids[id]; return Object.assign(emptyEntry(), e ? JSON.parse(JSON.stringify(e)) : {}); }
 function status(id){
   const e=entry(id); const last=e.sessions[e.sessions.length-1];
@@ -731,6 +749,38 @@ $("#scrim").addEventListener("click", ev=>{ if(ev.target.id==="scrim") closeShee
 document.addEventListener("keydown", ev=>{ if(ev.key==="Escape" && S.sheetMode) closeSheet(); });
 const closeBtn = () => `<button class="close" data-act="close" aria-label="${esc(t("close"))}">×</button>`;
 
+function mealText(m){
+  if(m.type==="bottle") return t("tl_bottle",{n:m.ml});
+  if(m.type==="potato") return t("tl_potato",{n:m.g});
+  return t("tl_fruit")+(m.note? " – "+m.note : "");
+}
+function draft(id){ return S.drafts[id] || (S.drafts[id]={type:"", ml:120, g:50, note:""}); }
+function foodBlock(id, dis){
+  const d=draft(id);
+  const pick=["bottle","potato","fruit"].map(k=>`<button class="btn food${d.type===k?" on":""}" data-act="food-type" data-food="${k}" aria-pressed="${d.type===k}" ${dis}>${esc(t("food_"+k))}</button>`).join("");
+  let form="";
+  if(d.type==="bottle"||d.type==="potato"){
+    const unit=d.type==="bottle"?"ml":"g", val=d.type==="bottle"?d.ml:d.g;
+    form=`<div class="foodbox">
+      <div class="amount"><button type="button" class="step" data-act="food-step" data-d="-10" aria-label="−10 ${unit}" ${dis}>−</button>
+        <output id="food-val">${val} ${unit}</output>
+        <button type="button" class="step" data-act="food-step" data-d="10" aria-label="+10 ${unit}" ${dis}>+</button></div>
+      <input type="range" class="food-range" id="food-range" min="0" max="300" step="10" value="${val}" aria-label="${esc(t("food_"+d.type))}" ${dis}>
+      <div class="range-scale"><span>0 ${unit}</span><span>150 ${unit}</span><span>300 ${unit}</span></div>
+      <button class="btn go" style="width:100%;margin-top:12px" data-act="food-add" ${dis}>${esc(t("food_add"))}</button></div>`;
+  } else if(d.type==="fruit"){
+    form=`<div class="foodbox"><label class="f">${esc(t("food_note"))}<input id="food-note" value="${esc(d.note)}" placeholder="${esc(t("food_note_ph"))}" ${dis}></label>
+      <button class="btn go" style="width:100%;margin-top:12px" data-act="food-add" ${dis}>${esc(t("food_add"))}</button></div>`;
+  }
+  return `<div class="block"><h3>${esc(t("h_food"))}</h3><div class="row">${pick}</div>${form || `<p class="sub" style="margin:10px 0 0">${esc(t("food_pick"))}</p>`}</div>`;
+}
+function setFoodVal(id, v){
+  const d=draft(id); v=Math.max(0,Math.min(300,Math.round(v/10)*10));
+  if(d.type==="bottle") d.ml=v; else d.g=v;
+  const out=$("#food-val"), r=$("#food-range");
+  if(out) out.textContent=v+(d.type==="bottle"?" ml":" g");
+  if(r) r.value=v;
+}
 function openChild(id){ S.openChild=id; openSheet("child"); renderSheet(true); }
 function renderSheet(first){
   const c=S.children.get(S.openChild); if(!c){ closeSheet(); return; }
@@ -747,6 +797,7 @@ function renderSheet(first){
   e.sessions.forEach((s,i)=>{ items.push({t:s.in,k:"sessions",i,f:"in",col:"var(--bug)",txt:t("tl_in")}); if(s.out) items.push({t:s.out,k:"sessions",i,f:"out",col:"var(--away)",txt:t("tl_out")}); });
   e.sleeps.forEach((s,i)=>items.push({t:s.start,k:"sleeps",i,col:"var(--sleep)",txt: s.end? t("tl_slept",{t:hhmm(s.end),d:dur(s.start,s.end)}) : t("tl_sleeping")}));
   e.diapers.forEach((d,i)=>items.push({t:d.t,k:"diapers",i,col:"var(--sun)",txt:t("tl_dia",{k:diaLabel(d.kind)})}));
+  e.meals.forEach((m,i)=>items.push({t:m.t,k:"meals",i,col:"var(--present)",txt:mealText(m)}));
   e.notes.forEach((n,i)=>items.push({t:n.t,k:"notes",i,col:"var(--muted)",txt:n.text}));
   items.sort((a,b)=>new Date(a.t)-new Date(b.t));
   const ringCol = st.state==="in"?"var(--bug)":st.state==="sleep"?"var(--bug-sleep)":"var(--line)";
@@ -763,6 +814,7 @@ function renderSheet(first){
   <div class="block"><h3>${esc(t("h_sleepdia"))}</h3><div class="row">
     <button class="btn sleep ${sleeping?"on":""}" data-act="sleep" ${dis}>${esc(t(sleeping?"sleep_end":"sleep_start"))}</button>
     ${dia("wet")}${dia("dirty")}${dia("both")}${dia("dry")}</div></div>
+  ${foodBlock(c.id, dis)}
   <div class="block"><h3>${esc(t("h_note"))}</h3>
     <div class="note-in"><input id="note" placeholder="${esc(t("note_ph"))}" value="${esc(keepNote)}"><button class="btn small" data-act="note">${esc(t("add"))}</button></div></div>
   <div class="block"><h3>${esc(t("h_today"))}</h3>
@@ -780,6 +832,8 @@ function renderSheet(first){
   $("#sheet").scrollTop = first? 0 : scrollTop;
   $("#photo-in").addEventListener("change", ev=>uploadPhotos(c.id, ev.target.files));
   $("#note").addEventListener("keydown", ev=>{ if(ev.key==="Enter"){ ev.preventDefault(); addNote(c.id); } });
+  const fr=$("#food-range"); if(fr) fr.addEventListener("input", ()=>setFoodVal(c.id, +fr.value));
+  const fn=$("#food-note"); if(fn) fn.addEventListener("input", ()=>{ draft(c.id).note=fn.value; });
   const hb=$("#histbox"); hb.addEventListener("toggle", ()=>{ if(hb.open) loadHistory(c.id); });
   const rb=$("#repbox"); rb.addEventListener("toggle", ()=>{ if(rb.open) loadReports(c.id); });
   if(keepH.open) loadHistory(c.id);
@@ -870,6 +924,9 @@ function mailBody(c, e, date, lang){
   const col = lang==="fr"? " : " : ": ";
   Lx.push(M.arrived+col+(s0?hhmm(s0.in):"–"));
   Lx.push(M.left+col+(sl&&sl.out?hhmm(sl.out):M.still));
+  if(e.meals.length){ Lx.push("",M.food); e.meals.slice().sort(byTime).forEach(m=>{
+    const txt = m.type==="bottle"? tm(lang,"bottle",{n:m.ml}) : m.type==="potato"? tm(lang,"potato",{n:m.g}) : M.fruit+(m.note? " – "+m.note : "");
+    Lx.push(`- ${hhmm(m.t)} ${txt}`); }); }
   Lx.push("",M.sleep);
   if(e.sleeps.length) e.sleeps.forEach(x=>Lx.push("- "+tm(lang,"sleep_line",{a:hhmm(x.start), b:x.end?hhmm(x.end):"…", d:x.end?dur(x.start,x.end,lang):"…"})));
   else Lx.push("- "+M.no_sleep);
@@ -1140,6 +1197,13 @@ document.addEventListener("click", ev=>{
     case "sleep": { const tt=at(); saveEntry(id,e=>{ const s=e.sleeps[e.sleeps.length-1]; if(s&&!s.end) s.end=tt; else e.sleeps.push({start:tt,end:null}); }); resetTime(); break; }
     case "dia": saveEntry(id,e=>e.diapers.push({t:at(), kind:b.dataset.kind})); toast(t("dia_toast",{k:diaLabel(b.dataset.kind)})); resetTime(); break;
     case "note": addNote(id); break;
+    case "food-type": { const d=draft(id); d.type = d.type===b.dataset.food ? "" : b.dataset.food; renderSheet(); break; }
+    case "food-step": { const d=draft(id); setFoodVal(id, (d.type==="bottle"?d.ml:d.g) + (+b.dataset.d)); break; }
+    case "food-add": { const d=draft(id); if(!d.type) break;
+      const fnote=$("#food-note"); if(fnote) d.note=fnote.value.trim();
+      const m={t:at(), type:d.type}; if(d.type==="bottle") m.ml=d.ml; else if(d.type==="potato") m.g=d.g; else if(d.note) m.note=d.note;
+      d.type=""; d.note="";
+      saveEntry(id, e=>{ (e.meals=e.meals||[]).push(m); }); toast(mealText(m)); resetTime(); break; }
     case "del": { const k=b.dataset.k, i=+b.dataset.i, f=b.dataset.f;
       if(!confirm(t("confirm_del"))) break;
       saveEntry(id,e=>{ if(k==="sessions"&&f==="out") e.sessions[i].out=null; else e[k].splice(i,1); }); break; }
