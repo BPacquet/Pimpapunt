@@ -257,6 +257,15 @@ textarea{resize:vertical}
 .lang button{border:0;background:none;font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted);padding:6px 10px;border-radius:999px;cursor:pointer;min-width:42px;min-height:36px}
 .lang button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 2px 0 var(--line)}
 
+.moods{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.mood{border:0;background:var(--sunk);border-radius:18px;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-family:var(--display);font-weight:500;font-size:13px;line-height:1.15;color:var(--muted);box-shadow:0 3px 0 var(--line);text-align:center;-webkit-tap-highlight-color:transparent}
+.mood .e{font-size:36px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:transform .15s}
+.mood:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.mood.on{background:var(--sun-soft);color:var(--ink);box-shadow:0 0 0 3px var(--sun),0 3px 0 var(--sun-shade)}
+.mood.on .e{transform:scale(1.15)}
+.mood:disabled{opacity:.4;cursor:default}
+.mood-dot{position:absolute;top:8px;left:-10px;width:34px;height:34px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:21px;z-index:3;box-shadow:0 2px 0 var(--line);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+@media (max-width:560px){.mood{font-size:11px;padding:8px 2px}.mood .e{font-size:30px}}
 .btn.food{background:var(--present-soft);color:var(--present-dark);--shade:color-mix(in srgb,var(--present) 35%,var(--present-soft))}
 .btn.food.on{background:var(--present);color:#fff;--shade:var(--present-dark)}
 @media (prefers-color-scheme: dark){.btn.food{color:var(--present)}.btn.food.on{color:#fff}}
@@ -392,6 +401,7 @@ a_backup_h:"Back-up",a_backup_p:"Alle gegevens staan alleen op dit toestel. Gaat
 a_backup_nophotos:"Back-up zonder foto’s",a_backup_photos:"Met foto’s van de laatste 30 dagen",a_restore:"Back-up terugzetten",a_csv_h:"Kinderlijst als CSV",
 a_csv_p:"Vul de kinderlijst in Excel in en importeer ze hier. Gebruik het lege sjabloon voor de juiste kolommen. Bestaande kinderen worden herkend op badge of op naam en geboortedatum.",
 a_csv_import:"CSV importeren",a_csv_export:"CSV exporteren",a_csv_template:"Leeg sjabloon",a_report_h:"Dagverslag",a_sign:"Ondertekening onderaan elk dagverslag (leeg = standaardtekst in de taal van het verslag)",a_sign_ph:"Het team van de opvang",a_storage_h:"Opslag op dit toestel",
+h_mood:"Gemoedstoestand",mood_cry:"Veel geweend",mood_sad:"Triestig",mood_neutral:"Neutraal",mood_happy:"Blij",mood_joyful:"Vrolijk",
 h_food:"Eten",food_bottle:"🍼 Flesje",food_potato:"🥔 Aardappeltjes",food_fruit:"🍎 Fruitpap",food_pick:"Kies wat het kind at of dronk.",food_note:"Notitie bij de fruitpap",food_note_ph:"Bijvoorbeeld: alles opgegeten, met banaan",food_add:"Maaltijd toevoegen",tl_bottle:"Flesje: {n} ml",tl_potato:"Aardappeltjes: {n} g",tl_fruit:"Fruitpap",
 age_m1:"{n} maand",age_mn:"{n} maanden",age_y:"{n} jaar"},
 
@@ -433,6 +443,7 @@ a_backup_h:"Sauvegarde",a_backup_p:"Toutes les données se trouvent uniquement s
 a_backup_nophotos:"Sauvegarde sans photos",a_backup_photos:"Avec les photos des 30 derniers jours",a_restore:"Restaurer une sauvegarde",a_csv_h:"Liste des enfants en CSV",
 a_csv_p:"Remplissez la liste dans Excel et importez-la ici. Utilisez le modèle vide pour avoir les bonnes colonnes. Les enfants existants sont reconnus par badge ou par nom et date de naissance.",
 a_csv_import:"Importer un CSV",a_csv_export:"Exporter en CSV",a_csv_template:"Modèle vide",a_report_h:"Compte rendu",a_sign:"Signature en bas de chaque compte rendu (vide = texte standard dans la langue du compte rendu)",a_sign_ph:"L’équipe de la crèche",a_storage_h:"Stockage sur cet appareil",
+h_mood:"Humeur",mood_cry:"A beaucoup pleuré",mood_sad:"Triste",mood_neutral:"Neutre",mood_happy:"De bonne humeur",mood_joyful:"De très bonne humeur",
 h_food:"Repas",food_bottle:"🍼 Biberon",food_potato:"🥔 Pommes de terre",food_fruit:"🍎 Compote de fruits",food_pick:"Choisissez ce que l’enfant a mangé ou bu.",food_note:"Remarque sur la compote",food_note_ph:"Par exemple : tout mangé, avec de la banane",food_add:"Ajouter le repas",tl_bottle:"Biberon : {n} ml",tl_potato:"Pommes de terre : {n} g",tl_fruit:"Compote de fruits",
 age_m1:"{n} mois",age_mn:"{n} mois",age_y:"{n} an",age_yn:"{n} ans"},
 
@@ -474,6 +485,7 @@ a_backup_h:"Backup",a_backup_p:"All data is stored only on this device. If the d
 a_backup_nophotos:"Backup without photos",a_backup_photos:"With photos from the last 30 days",a_restore:"Restore backup",a_csv_h:"Children list as CSV",
 a_csv_p:"Fill in the list in Excel and import it here. Use the empty template for the right columns. Existing children are matched by badge or by name and date of birth.",
 a_csv_import:"Import CSV",a_csv_export:"Export CSV",a_csv_template:"Empty template",a_report_h:"Daily report",a_sign:"Signature at the bottom of each report (empty = standard text in the report’s language)",a_sign_ph:"The daycare team",a_storage_h:"Storage on this device",
+h_mood:"Mood",mood_cry:"Cried a lot",mood_sad:"Sad",mood_neutral:"Neutral",mood_happy:"Happy",mood_joyful:"Cheerful",
 h_food:"Food",food_bottle:"🍼 Bottle",food_potato:"🥔 Potatoes",food_fruit:"🍎 Fruit purée",food_pick:"Choose what the child ate or drank.",food_note:"Note about the fruit purée",food_note_ph:"For example: ate it all, with banana",food_add:"Add meal",tl_bottle:"Bottle: {n} ml",tl_potato:"Potatoes: {n} g",tl_fruit:"Fruit purée",
 age_m1:"{n} month",age_mn:"{n} months",age_y:"{n} year",age_yn:"{n} years"}
 };
@@ -482,20 +494,25 @@ const MAIL={
   nl:{subject:"Dagverslag {n} – {d}",hello:"Beste ouders,",intro:"Hier is het dagverslag van {n} van {d}.",arrived:"Aangekomen",left:"Vertrokken",still:"nog aanwezig",
       sleep:"Slapen",sleep_line:"{a} tot {b} ({d})",no_sleep:"niet geslapen",dia:"Verversen",no_dia:"geen verversing geregistreerd",notes:"Notities",
       photos_1:"Vandaag maakten we 1 foto.",photos_n:"Vandaag maakten we {n} foto’s.",bye:"Tot de volgende keer!",sign:"Het team van de opvang",
+      mood:"Gemoedstoestand",moods:{cry:"veel geweend",sad:"triestig",neutral:"neutraal",happy:"blij",joyful:"vrolijk"},
       food:"Eten",bottle:"flesje {n} ml",potato:"aardappeltjes {n} g",fruit:"fruitpap",
       kinds:{wet:"nat",dirty:"vuil",both:"nat en vuil",dry:"droog"}},
   fr:{subject:"Compte rendu de {n} – {d}",hello:"Chers parents,",intro:"Voici le compte rendu de la journée de {n}, {d}.",arrived:"Arrivée",left:"Départ",still:"encore à la crèche",
       sleep:"Sieste",sleep_line:"de {a} à {b} ({d})",no_sleep:"pas de sieste",dia:"Changes",no_dia:"aucun change enregistré",notes:"Remarques",
       photos_1:"Aujourd’hui, nous avons pris 1 photo.",photos_n:"Aujourd’hui, nous avons pris {n} photos.",bye:"À bientôt !",sign:"L’équipe de la crèche",
+      mood:"Humeur",moods:{cry:"a beaucoup pleuré",sad:"triste",neutral:"neutre",happy:"de bonne humeur",joyful:"de très bonne humeur"},
       food:"Repas",bottle:"biberon {n} ml",potato:"pommes de terre {n} g",fruit:"compote de fruits",
       kinds:{wet:"mouillé",dirty:"selles",both:"mouillé et selles",dry:"sec"}},
   en:{subject:"Daily report {n} – {d}",hello:"Dear parents,",intro:"Here is {n}’s daily report for {d}.",arrived:"Arrived",left:"Left",still:"still here",
       sleep:"Sleep",sleep_line:"{a} to {b} ({d})",no_sleep:"no nap",dia:"Nappy changes",no_dia:"no changes recorded",notes:"Notes",
       photos_1:"Today we took 1 photo.",photos_n:"Today we took {n} photos.",bye:"See you next time!",sign:"The daycare team",
+      mood:"Mood",moods:{cry:"cried a lot",sad:"sad",neutral:"neutral",happy:"happy",joyful:"cheerful"},
       food:"Meals",bottle:"bottle {n} ml",potato:"potatoes {n} g",fruit:"fruit purée",
       kinds:{wet:"wet",dirty:"dirty",both:"wet and dirty",dry:"dry"}}
 };
 /* stored diaper values are the original Dutch words; map them to keys */
+const MOODS=[["cry","😭"],["sad","😢"],["neutral","😐"],["happy","🙂"],["joyful","😄"]];
+const moodEmoji=k=>(MOODS.find(m=>m[0]===k)||["","🙂"])[1];
 const DIA_KEY={"nat":"wet","vuil":"dirty","nat en vuil":"both","droog":"dry"};
 const DIA_STORE={wet:"nat",dirty:"vuil",both:"nat en vuil",dry:"droog"};
 const STATUS_KEY={"klaargezet":"ready","geopend in Mail":"opened","gedeeld met foto’s":"shared","ready":"ready","opened":"opened","shared":"shared"};
@@ -645,7 +662,7 @@ const blobToDataURL = b => new Promise((res,rej)=>{ const r=new FileReader(); r.
 /* ================= state ================= */
 const S = { drafts:{}, children:new Map(), day:null, date:dayKey(), openChild:null, sheetMode:null, ready:false };
 const kidsSorted = () => [...S.children.values()].sort((a,b)=>(a.voornaam||"").localeCompare(b.voornaam||"","nl"));
-const emptyEntry = () => ({ sessions:[], sleeps:[], diapers:[], meals:[], notes:[], photos:[], mailedAt:null });
+const emptyEntry = () => ({ sessions:[], sleeps:[], diapers:[], meals:[], moods:[], notes:[], photos:[], mailedAt:null });
 function entry(id){ const e=S.day && S.day.kids[id]; return Object.assign(emptyEntry(), e ? JSON.parse(JSON.stringify(e)) : {}); }
 function status(id){
   const e=entry(id); const last=e.sessions[e.sessions.length-1];
@@ -721,6 +738,12 @@ function bugHead(state){
     : `<circle class="eye" cx="24" cy="34" r="5"/><circle class="eye" cx="40" cy="34" r="5"/><circle class="pup" cx="25" cy="35" r="2.4"/><circle class="pup" cx="41" cy="35" r="2.4"/>`;
   return `<svg class="lb-head" viewBox="0 0 64 44" aria-hidden="true"><path class="ant" d="M26 22 Q20 8 11 6"/><path class="ant" d="M38 22 Q44 8 53 6"/><circle class="knob" cx="11" cy="6" r="3.5"/><circle class="knob" cx="53" cy="6" r="3.5"/><path class="h" d="M12 46 A20 20 0 0 1 52 46 Z"/>${eyes}</svg>`;
 }
+function moodDot(id, state){
+  if(state!=="in" && state!=="sleep") return "";
+  const e=entry(id); if(!e.moods.length) return "";
+  const k=e.moods[e.moods.length-1].mood;
+  return `<span class="mood-dot" title="${esc(t("mood_"+k))}">${moodEmoji(k)}</span>`;
+}
 function renderRack(){
   const rack=$("#rack"); const kids=kidsSorted();
   if(!S.ready){ rack.innerHTML=`<div class="empty" style="grid-column:1/-1">${esc(t("loading"))}</div>`; return; }
@@ -729,7 +752,7 @@ function renderRack(){
   rack.innerHTML=kids.map(c=>{ const st=status(c.id); next[c.id]=st.state;
     const swing = prev[c.id] && prev[c.id]!==st.state ? " swing" : "";
     return `<button class="hook" data-open="${esc(c.id)}" data-state="${st.state}" aria-label="${esc(fullName(c))}, ${esc(st.label)}">
-      <span class="tagbox${swing}"><span class="ringwrap">${bugHead(st.state)}<span class="ring">${avatarHTML(c)}</span>${st.state==="sleep"?`<span class="zz" aria-hidden="true">z<small>z</small></span>`:""}${c.allergieen?`<span class="allergy-dot" title="${esc(t("allergy"))}">!</span>`:""}</span>
+      <span class="tagbox${swing}"><span class="ringwrap">${bugHead(st.state)}<span class="ring">${avatarHTML(c)}</span>${st.state==="sleep"?`<span class="zz" aria-hidden="true">z<small>z</small></span>`:""}${c.allergieen?`<span class="allergy-dot" title="${esc(t("allergy"))}">!</span>`:""}${moodDot(c.id, st.state)}</span>
       <span class="nm">${esc(c.voornaam||"")}</span><span class="st">${esc(st.label)}</span></span></button>`; }).join("");
   S.prevStates=next;
 }
@@ -774,6 +797,10 @@ function foodBlock(id, dis){
   }
   return `<div class="block"><h3>${esc(t("h_food"))}</h3><div class="row">${pick}</div>${form || `<p class="sub" style="margin:10px 0 0">${esc(t("food_pick"))}</p>`}</div>`;
 }
+function moodBlock(e, dis){
+  const last=e.moods.length? e.moods[e.moods.length-1].mood : "";
+  return `<div class="block"><h3>${esc(t("h_mood"))}</h3><div class="moods">${MOODS.map(([k,em])=>`<button class="mood${k===last?" on":""}" data-act="mood" data-mood="${k}" aria-pressed="${k===last}" ${dis}><span class="e" aria-hidden="true">${em}</span><span>${esc(t("mood_"+k))}</span></button>`).join("")}</div></div>`;
+}
 function setFoodVal(id, v){
   const d=draft(id); v=Math.max(0,Math.min(300,Math.round(v/10)*10));
   if(d.type==="bottle") d.ml=v; else d.g=v;
@@ -797,6 +824,7 @@ function renderSheet(first){
   e.sessions.forEach((s,i)=>{ items.push({t:s.in,k:"sessions",i,f:"in",col:"var(--bug)",txt:t("tl_in")}); if(s.out) items.push({t:s.out,k:"sessions",i,f:"out",col:"var(--away)",txt:t("tl_out")}); });
   e.sleeps.forEach((s,i)=>items.push({t:s.start,k:"sleeps",i,col:"var(--sleep)",txt: s.end? t("tl_slept",{t:hhmm(s.end),d:dur(s.start,s.end)}) : t("tl_sleeping")}));
   e.diapers.forEach((d,i)=>items.push({t:d.t,k:"diapers",i,col:"var(--sun)",txt:t("tl_dia",{k:diaLabel(d.kind)})}));
+  e.moods.forEach((m,i)=>items.push({t:m.t,k:"moods",i,col:"var(--sun)",txt:moodEmoji(m.mood)+" "+t("mood_"+m.mood)}));
   e.meals.forEach((m,i)=>items.push({t:m.t,k:"meals",i,col:"var(--present)",txt:mealText(m)}));
   e.notes.forEach((n,i)=>items.push({t:n.t,k:"notes",i,col:"var(--muted)",txt:n.text}));
   items.sort((a,b)=>new Date(a.t)-new Date(b.t));
@@ -815,6 +843,7 @@ function renderSheet(first){
     <button class="btn sleep ${sleeping?"on":""}" data-act="sleep" ${dis}>${esc(t(sleeping?"sleep_end":"sleep_start"))}</button>
     ${dia("wet")}${dia("dirty")}${dia("both")}${dia("dry")}</div></div>
   ${foodBlock(c.id, dis)}
+  ${moodBlock(e, dis)}
   <div class="block"><h3>${esc(t("h_note"))}</h3>
     <div class="note-in"><input id="note" placeholder="${esc(t("note_ph"))}" value="${esc(keepNote)}"><button class="btn small" data-act="note">${esc(t("add"))}</button></div></div>
   <div class="block"><h3>${esc(t("h_today"))}</h3>
@@ -932,6 +961,7 @@ function mailBody(c, e, date, lang){
   else Lx.push("- "+M.no_sleep);
   Lx.push("",M.dia);
   if(e.diapers.length) e.diapers.slice().sort(byTime).forEach(d=>Lx.push(`- ${hhmm(d.t)} ${M.kinds[DIA_KEY[d.kind]||"wet"]}`)); else Lx.push("- "+M.no_dia);
+  if(e.moods.length){ Lx.push("",M.mood); e.moods.slice().sort(byTime).forEach(m=>Lx.push(`- ${hhmm(m.t)} ${moodEmoji(m.mood)} ${M.moods[m.mood]||""}`)); }
   if(e.notes.length){ Lx.push("",M.notes); e.notes.slice().sort(byTime).forEach(n=>Lx.push(`- ${hhmm(n.t)} ${n.text}`)); }
   if(e.photos.length) Lx.push("", e.photos.length===1? M.photos_1 : tm(lang,"photos_n",{n:e.photos.length}));
   Lx.push("",M.bye, SET.sign||M.sign);
@@ -1197,6 +1227,7 @@ document.addEventListener("click", ev=>{
     case "sleep": { const tt=at(); saveEntry(id,e=>{ const s=e.sleeps[e.sleeps.length-1]; if(s&&!s.end) s.end=tt; else e.sleeps.push({start:tt,end:null}); }); resetTime(); break; }
     case "dia": saveEntry(id,e=>e.diapers.push({t:at(), kind:b.dataset.kind})); toast(t("dia_toast",{k:diaLabel(b.dataset.kind)})); resetTime(); break;
     case "note": addNote(id); break;
+    case "mood": { const mk=b.dataset.mood; saveEntry(id, e=>{ (e.moods=e.moods||[]).push({t:at(), mood:mk}); }); toast(moodEmoji(mk)+" "+t("mood_"+mk)); resetTime(); break; }
     case "food-type": { const d=draft(id); d.type = d.type===b.dataset.food ? "" : b.dataset.food; renderSheet(); break; }
     case "food-step": { const d=draft(id); setFoodVal(id, (d.type==="bottle"?d.ml:d.g) + (+b.dataset.d)); break; }
     case "food-add": { const d=draft(id); if(!d.type) break;
