@@ -1,6 +1,6 @@
-// Kapstok service worker: houdt de app-bestanden bij zodat de app offline opent.
+// Pimpapunt service worker: houdt de app-bestanden bij zodat de app offline opent.
 // De gegevens van de kinderen staan NIET hier maar in IndexedDB op het toestel.
-const CACHE = "kapstok-v1";
+const CACHE = "kapstok-v5";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
