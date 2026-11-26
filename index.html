@@ -56,8 +56,8 @@ img{max-width:100%;display:block}
 
 /* header */
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:3px solid var(--line)}
-.top-in{max-width:1100px;margin:0 auto;padding:12px 18px 12px;display:grid;grid-template-columns:1fr auto;grid-template-areas:"brand scan" "tabs count";gap:10px 16px;align-items:center}
-.brand{grid-area:brand}.scan{grid-area:scan}.tabs{grid-area:tabs}.count{grid-area:count}
+.top-in{max-width:1100px;margin:0 auto;padding:12px 18px 12px;display:grid;grid-template-columns:1fr auto auto;grid-template-areas:"brand lang scan" "tabs tabs count";gap:10px 16px;align-items:center}
+.brand{grid-area:brand}.lang{grid-area:lang}.scan{grid-area:scan}.tabs{grid-area:tabs}.count{grid-area:count}
 .brand{display:flex;align-items:baseline;gap:12px;min-width:0}
 .brand h1{font-family:var(--display);font-weight:600;font-size:32px;line-height:1;margin:0;color:var(--ink);display:flex;align-items:center;gap:8px}
 .brand .logo{width:34px;height:34px;flex:none;color:var(--ink)}
@@ -232,7 +232,7 @@ textarea{resize:vertical}
 .hidden{display:none !important}
 @media (max-width:560px){
   :root{--row:264px}
-  .top-in{grid-template-columns:1fr auto;grid-template-areas:"brand count" "scan scan" "tabs tabs";padding:10px 14px}
+  .top-in{grid-template-columns:1fr auto;grid-template-areas:"brand count" "scan lang" "tabs tabs";padding:10px 14px}
   .scan input{width:100%}
   .tab{flex:1;padding:7px 10px;font-size:16px}
   .count{padding:4px 11px;font-size:14px}
@@ -252,21 +252,37 @@ textarea{resize:vertical}
   .brand .ds{display:inline}
 }
 @media (prefers-reduced-motion:reduce){.swing,.sheet{animation:none}.ring,.toast{transition:none}.btn{transition:none}}
+
+.lang{display:flex;gap:2px;background:var(--sunk);border-radius:999px;padding:4px;align-self:center}
+.lang button{border:0;background:none;font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted);padding:6px 10px;border-radius:999px;cursor:pointer;min-width:42px;min-height:36px}
+.lang button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 2px 0 var(--line)}
+label.f select{border:2px solid var(--line);background:var(--wall);border-radius:14px;padding:10px 12px;color:var(--ink);font-size:17px;min-height:48px;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 14px) 21px;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid2 .mt{color:var(--ink);font-family:var(--display);font-weight:600;font-size:17px;min-height:48px;display:flex;align-items:center}
+@media (max-width:560px){.lang button{min-width:36px;padding:6px 8px}}
+@media (max-width:900px){.brand .dl{display:none}.brand .ds{display:inline}}
+.brand .dm{display:none}
+@media (max-width:560px){.brand .ds{display:none !important}.brand .dm{display:inline}}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="top-in">
     <div class="brand"><h1><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><path d="M14 9 Q11 3 6 3" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M26 9 Q29 3 34 3" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="20" cy="12" r="7" fill="#1E1E24"/><circle cx="20" cy="24" r="14" fill="#E5383B"/><path d="M20 10 V38" stroke="#1E1E24" stroke-width="2"/><circle cx="13" cy="20" r="2.8" fill="#1E1E24"/><circle cx="27" cy="20" r="2.8" fill="#1E1E24"/><circle cx="12" cy="29" r="2.4" fill="#1E1E24"/><circle cx="28" cy="29" r="2.4" fill="#1E1E24"/><circle cx="20" cy="31" r="0" fill="#1E1E24"/></svg>Pimpapunt</h1><span class="date" id="today-label"></span></div>
+    <div class="lang" role="group" data-ilabel="lang_label">
+      <button type="button" data-lang="nl">NL</button>
+      <button type="button" data-lang="fr">FR</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
     <label class="scan" id="scanbox">
       <span class="dot" aria-hidden="true"></span>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M7 10h4M7 14h7"/></svg>
-      <input id="scan" type="text" inputmode="none" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Badge scannen" aria-label="Badge scannen">
+      <input id="scan" type="text" inputmode="none" autocomplete="off" autocapitalize="off" spellcheck="false" data-iph="scan_ph" data-ilabel="scan_ph">
     </label>
     <nav class="tabs" role="tablist">
-      <button class="tab" role="tab" aria-selected="true" data-tab="today">Vandaag</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="kids">Kinderen</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="admin">Beheer</button>
+      <button class="tab" role="tab" aria-selected="true" data-tab="today" data-i="tab_today"></button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="kids" data-i="tab_kids"></button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="admin" data-i="tab_admin"></button>
     </nav>
     <span class="count" id="count"></span>
   </div>
@@ -276,37 +292,37 @@ textarea{resize:vertical}
   <div class="notice" id="notice"></div>
   <section id="view-today"><div class="rack" id="rack"></div></section>
   <section id="view-kids" class="hidden">
-    <div class="toolbar"><button class="btn primary" data-act="new-kid">Kind toevoegen</button></div>
+    <div class="toolbar"><button class="btn primary" data-act="new-kid" data-i="add_kid"></button></div>
     <div class="list" id="kidlist"></div>
   </section>
   <section id="view-admin" class="hidden">
     <div class="panel">
-      <h2>Back-up</h2>
-      <p>Alle gegevens staan alleen op dit toestel. Gaat het toestel verloren of wordt Pimpapunt verwijderd, dan zijn ze weg. Maak daarom elke week een back-up en bewaar die op een veilige plek, zoals OneDrive of een USB-stick.</p>
+      <h2 data-i="a_backup_h"></h2>
+      <p data-i="a_backup_p"></p>
       <p class="sub" id="last-backup"></p>
       <div class="row">
-        <button class="btn primary" data-act="backup" data-photos="0">Back-up zonder foto’s</button>
-        <button class="btn ghost" data-act="backup" data-photos="30">Met foto’s van de laatste 30 dagen</button>
-        <label class="btn ghost filebtn">Back-up terugzetten<input type="file" id="restore-in" accept="application/json,.json"></label>
+        <button class="btn primary" data-act="backup" data-photos="0" data-i="a_backup_nophotos"></button>
+        <button class="btn ghost" data-act="backup" data-photos="30" data-i="a_backup_photos"></button>
+        <label class="btn ghost filebtn"><span data-i="a_restore"></span><input type="file" id="restore-in" accept="application/json,.json"></label>
       </div>
       <div id="backup-ready" class="row" style="margin-top:12px"></div>
     </div>
     <div class="panel">
-      <h2>Kinderlijst als CSV</h2>
-      <p>Vul de kinderlijst in Excel in en importeer ze hier. Gebruik het lege sjabloon voor de juiste kolommen. Bestaande kinderen worden herkend op badge of op naam en geboortedatum.</p>
+      <h2 data-i="a_csv_h"></h2>
+      <p data-i="a_csv_p"></p>
       <div class="row">
-        <label class="btn ghost filebtn">CSV importeren<input type="file" id="csv-in" accept=".csv,text/csv,text/plain"></label>
-        <button class="btn ghost" data-act="csv-export">CSV exporteren</button>
-        <button class="btn ghost" data-act="csv-template">Leeg sjabloon</button>
+        <label class="btn ghost filebtn"><span data-i="a_csv_import"></span><input type="file" id="csv-in" accept=".csv,text/csv,text/plain"></label>
+        <button class="btn ghost" data-act="csv-export" data-i="a_csv_export"></button>
+        <button class="btn ghost" data-act="csv-template" data-i="a_csv_template"></button>
       </div>
     </div>
     <div class="panel">
-      <h2>Dagverslag</h2>
-      <label class="f">Ondertekening onderaan elk dagverslag<input id="set-sign" placeholder="Het team van de opvang"></label>
+      <h2 data-i="a_report_h"></h2>
+      <label class="f"><span data-i="a_sign"></span><input id="set-sign" data-iph="a_sign_ph"></label>
     </div>
     <div class="panel">
-      <h2>Opslag op dit toestel</h2>
-      <p id="storage-info">Berekenen…</p>
+      <h2 data-i="a_storage_h"></h2>
+      <p id="storage-info"></p>
     </div>
   </section>
 </main>
@@ -317,38 +333,227 @@ textarea{resize:vertical}
 <script>
 (function(){
 "use strict";
+/* ================= translations ================= */
+const LANGS=["nl","fr","en"];
+const LOCALE={nl:"nl-BE",fr:"fr-BE",en:"en-GB"};
+const CAL={
+  nl:{days:["zondag","maandag","dinsdag","woensdag","donderdag","vrijdag","zaterdag"],months:["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"],h:"u"},
+  fr:{days:["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"],months:["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"],h:"h"},
+  en:{days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],months:["January","February","March","April","May","June","July","August","September","October","November","December"],h:"h"}
+};
+const T={
+nl:{lang_label:"Taal",tab_today:"Vandaag",tab_kids:"Kinderen",tab_admin:"Beheer",scan_ph:"Badge scannen",
+count_long:" van {t} binnen",count_short:"/{t} binnen",
+st_absent:"Nog niet binnen",st_out:"Vertrokken {t}",st_sleep:"Slaapt sinds {t}",st_in:"Binnen sinds {t}",
+empty_title:"Nog geen kinderen",empty_text:"Voeg een kind toe, of importeer de kinderlijst via Beheer.",add_kid:"Kind toevoegen",loading:"Laden…",no_kids:"Nog geen kinderen.",no_birth:"Geboortedatum ontbreekt",
+chip_allergy:"Allergie",chip_badge:"Badge",chip_nobadge:"Geen badge",close:"Sluiten",allergy:"Allergie",time:"Tijdstip",time_hint:"leeg = nu",
+btn_out:"Vertrek registreren",btn_in:"Binnen melden",btn_in_again:"Opnieuw binnen",h_sleepdia:"Slapen en verversen",sleep_start:"🌙 Start slaapje",sleep_end:"☀️ Wakker",
+dia_wet:"Nat",dia_dirty:"Vuil",dia_both:"Nat en vuil",dia_dry:"Droog",h_note:"Notitie",note_ph:"Bijvoorbeeld: flesje 150 ml, goed gegeten",add:"Toevoegen",h_today:"Vandaag",
+tl_in:"Binnengekomen",tl_out:"Vertrokken",tl_slept:"Geslapen tot {t} ({d})",tl_sleeping:"Slaapt",tl_dia:"Verversen: {k}",nothing_today:"Nog niets geregistreerd vandaag.",delete:"Verwijderen",
+h_photos:"Foto’s",add_photo:"Foto toevoegen",no_photos:"Nog geen foto’s vandaag.",photo:"Foto",del_photo:"Foto verwijderen",photo_1:"{n} foto",photo_n:"{n} foto’s",
+mail_report:"Dagverslag mailen",mail_ready_at:" (klaargezet {t})",edit_kid:"Gegevens bewerken",h_contact:"Contact en medisch",h_reports:"Verslagen",h_history:"Vorige dagen",
+f_address:"Adres",f_birth:"Geboortedatum",f_lang:"Moedertaal",parent1:"Ouder 1",parent2:"Ouder 2",emergency:"Bij nood",doctor:"Huisarts",allergies:"Allergieën",none_known:"Geen gekend",
+lang_nl:"Nederlands",lang_fr:"Frans",lang_en:"Engels",lang_other:"Andere taal",report_in:"dagverslag in het {l}",
+photos_saving:"Foto’s opslaan…",photos_added_1:"1 foto toegevoegd",photos_added_n:"{n} foto’s toegevoegd",
+no_history:"Geen eerdere dagen gevonden.",hist_day:"Dag",hist_in:"In",hist_out:"Uit",hist_sleep:"Slaap",hist_dia:"Verv.",hist_photos:"Foto’s",err_history:"Kon de geschiedenis niet laden.",
+no_reports:"Nog geen verslagen. Een verslag wordt bewaard zodra het bij vertrek klaargezet wordt.",err_reports:"Kon de verslagen niet laden.",report_missing:"Dit verslag werd niet gevonden.",
+back:"Terug",back_to:"Terug naar {n}",saved_at:" – laatst bewaard om {t}",to:"Aan",reopen_mail:"Opnieuw openen in Mail",save_txt:"Bewaren als tekst",
+status_ready:"klaargezet",status_opened:"geopend in Mail",status_shared:"gedeeld met foto’s",
+report_title:"Dagverslag {n}",autosaved:"Wordt automatisch bewaard bij {n}.",no_email:"geen e-mailadres van de ouders ingevuld",subject:"Onderwerp",message:"Bericht",mail_lang:"Taal van het verslag",
+edited_note:"Dit is de aangepaste tekst.",rebuild:"Opnieuw opbouwen uit vandaag",relang_confirm:"Je aangepaste tekst wordt vervangen door een nieuw verslag in de gekozen taal. Doorgaan?",
+share_hint:"Met Delen gaan tekst en foto’s samen naar Mail. Kies daar de ouders als ontvanger.",share_no:"Foto’s rechtstreeks meesturen lukt niet op dit toestel.",share_with:"Delen met {p}",share_btn:"Delen met foto’s",
+open_mail:"Openen in Mail",open_mail_nophotos:"Openen in Mail zonder foto’s",copy:"Tekst kopiëren",copied:"Tekst gekopieerd",select_copy:"Selecteer en kopieer de tekst",share_fail:"Delen met foto’s lukte niet op dit toestel.",
+unknown_badge:"Onbekende badge",unknown_badge_sub:"Badge {c} is nog aan geen enkel kind gekoppeld.",choose_child:"Kies het kind dat deze badge krijgt:",all_have_badge:"Alle kinderen hebben al een badge. Pas een badge aan via Gegevens bewerken.",
+none:"Geen",in_use:"Al in gebruik",fs_child:"Kind",f_first:"Voornaam",f_last:"Naam",f_name:"Naam",f_phone:"Telefoon",f_email:"E-mail",fs_emerg:"Contactpersoon bij nood",f_fullname:"Naam en voornaam",f_relation:"Relatie",
+fs_doctor:"Huisarts",f_doctor:"Naam huisarts",new_kid:"Nieuw kind",form_sub:"Deze gegevens voeden de hele app.",fs_allergies:"Allergieën",allergy_ph:"Leeg laten als er geen gekend zijn",
+fs_lang:"Taal",f_lang_other:"Welke taal?",f_lang_other_ph:"Bijvoorbeeld: Turks",f_mail_lang:"Dagverslag in",fs_badge:"Badge en foto",f_badge:"Badgecode",badge_ph:"Scan de badge nu",f_photo:"Profielfoto",del_profile:"Profielfoto verwijderen",
+f_symbol:"Symbool (wordt getoond als er geen profielfoto is)",del_kid:"Kind verwijderen",cancel:"Annuleren",save:"Opslaan",need_name:"Vul voornaam en naam in.",badge_taken:"Deze badge hoort al bij {n}.",kid_saved:"{n} is opgeslagen",
+csv_empty:"Het bestand bevat geen kinderen.",csv_cols:"Kolommen voornaam en naam ontbreken. Gebruik het sjabloon.",csv_done:"{a} toegevoegd, {u} bijgewerkt",
+last_backup:"Laatste back-up: {d}",no_backup_yet:"Er werd nog geen back-up gemaakt.",backup_old:"Er is al meer dan een week geen back-up gemaakt van de gegevens op dit toestel.",backup_none:"Er is nog geen back-up gemaakt van de gegevens op dit toestel.",
+make_backup:"Back-up maken",backup_prep:"Back-up voorbereiden…",backup_save:"Back-up bewaren ({s} MB)",backup_fail:"De back-up kon niet gemaakt worden.",
+restore_invalid:"Dit is geen geldig back-upbestand.",restore_notours:"Dit is geen Pimpapunt-back-up.",restore_confirm:"Back-up van {d} terugzetten?\nKinderen, dagen en verslagen uit de back-up overschrijven dezelfde gegevens op dit toestel.",restoring:"Back-up terugzetten…",restored:"Back-up teruggezet",
+storage_used:"In gebruik: {s} MB. ",storage_ok:"De gegevens zijn beschermd tegen automatisch opruimen.",storage_warn:"Gebruik Pimpapunt via het icoon op het beginscherm, zodat iOS de gegevens niet opruimt.",storage_na:"Geen informatie beschikbaar.",computing:"Berekenen…",
+is_in:"{n} is binnen",is_in_at:"{n} is binnen om {t}",leaves_at:"{n} vertrekt om {t}. Het dagverslag staat klaar.",badge_filled:"Badge ingevuld",badge_linked:"Badge gekoppeld aan {n}",dia_toast:"Verversen: {k}",
+confirm_del:"Deze registratie verwijderen?",confirm_delphoto:"Deze foto definitief verwijderen?",confirm_delkid:"{n} verwijderen uit de lijst? De dagregistraties en verslagen blijven bewaard.",kid_deleted:"{n} is verwijderd",sign_saved:"Ondertekening bewaard",
+err_full:"De opslag op dit toestel is vol. Maak een back-up en verwijder oude foto’s.",err_save:"Opslaan lukte niet{e}.",file_protocol:"Open Pimpapunt via een webadres (https), niet als los bestand.",db_fail:"De opslag op dit toestel kon niet geopend worden. Controleer of privé-navigatie uit staat.",
+a_backup_h:"Back-up",a_backup_p:"Alle gegevens staan alleen op dit toestel. Gaat het toestel verloren of wordt Pimpapunt verwijderd, dan zijn ze weg. Maak daarom elke week een back-up en bewaar die op een veilige plek, zoals OneDrive of een USB-stick.",
+a_backup_nophotos:"Back-up zonder foto’s",a_backup_photos:"Met foto’s van de laatste 30 dagen",a_restore:"Back-up terugzetten",a_csv_h:"Kinderlijst als CSV",
+a_csv_p:"Vul de kinderlijst in Excel in en importeer ze hier. Gebruik het lege sjabloon voor de juiste kolommen. Bestaande kinderen worden herkend op badge of op naam en geboortedatum.",
+a_csv_import:"CSV importeren",a_csv_export:"CSV exporteren",a_csv_template:"Leeg sjabloon",a_report_h:"Dagverslag",a_sign:"Ondertekening onderaan elk dagverslag (leeg = standaardtekst in de taal van het verslag)",a_sign_ph:"Het team van de opvang",a_storage_h:"Opslag op dit toestel",
+age_m1:"{n} maand",age_mn:"{n} maanden",age_y:"{n} jaar"},
+
+fr:{lang_label:"Langue",tab_today:"Aujourd’hui",tab_kids:"Enfants",tab_admin:"Gestion",scan_ph:"Scanner un badge",
+count_long:" sur {t} présents",count_short:"/{t} présents",
+st_absent:"Pas encore là",st_out:"Départ {t}",st_sleep:"Sieste depuis {t}",st_in:"Arrivée {t}",
+empty_title:"Aucun enfant pour l’instant",empty_text:"Ajoutez un enfant ou importez la liste via Gestion.",add_kid:"Ajouter un enfant",loading:"Chargement…",no_kids:"Aucun enfant.",no_birth:"Date de naissance manquante",
+chip_allergy:"Allergie",chip_badge:"Badge",chip_nobadge:"Pas de badge",close:"Fermer",allergy:"Allergie",time:"Heure",time_hint:"vide = maintenant",
+btn_out:"Enregistrer le départ",btn_in:"Enregistrer l’arrivée",btn_in_again:"De retour",h_sleepdia:"Sieste et changes",sleep_start:"🌙 Début de sieste",sleep_end:"☀️ Réveil",
+dia_wet:"Mouillé",dia_dirty:"Selles",dia_both:"Mouillé et selles",dia_dry:"Sec",h_note:"Remarque",note_ph:"Par exemple : biberon 150 ml, a bien mangé",add:"Ajouter",h_today:"Aujourd’hui",
+tl_in:"Arrivée",tl_out:"Départ",tl_slept:"Sieste jusqu’à {t} ({d})",tl_sleeping:"Sieste en cours",tl_dia:"Change : {k}",nothing_today:"Rien d’enregistré aujourd’hui.",delete:"Supprimer",
+h_photos:"Photos",add_photo:"Ajouter une photo",no_photos:"Pas encore de photos aujourd’hui.",photo:"Photo",del_photo:"Supprimer la photo",photo_1:"{n} photo",photo_n:"{n} photos",
+mail_report:"Envoyer le compte rendu",mail_ready_at:" (préparé à {t})",edit_kid:"Modifier la fiche",h_contact:"Contact et médical",h_reports:"Comptes rendus",h_history:"Jours précédents",
+f_address:"Adresse",f_birth:"Date de naissance",f_lang:"Langue maternelle",parent1:"Parent 1",parent2:"Parent 2",emergency:"En cas d’urgence",doctor:"Médecin traitant",allergies:"Allergies",none_known:"Aucune connue",
+lang_nl:"Néerlandais",lang_fr:"Français",lang_en:"Anglais",lang_other:"Autre langue",report_in:"compte rendu en {l}",
+photos_saving:"Enregistrement des photos…",photos_added_1:"1 photo ajoutée",photos_added_n:"{n} photos ajoutées",
+no_history:"Aucun jour précédent.",hist_day:"Jour",hist_in:"Arr.",hist_out:"Dép.",hist_sleep:"Sieste",hist_dia:"Changes",hist_photos:"Photos",err_history:"Impossible de charger l’historique.",
+no_reports:"Aucun compte rendu. Il est enregistré dès qu’il est préparé au départ.",err_reports:"Impossible de charger les comptes rendus.",report_missing:"Compte rendu introuvable.",
+back:"Retour",back_to:"Retour à {n}",saved_at:" – enregistré à {t}",to:"À",reopen_mail:"Rouvrir dans Mail",save_txt:"Enregistrer en texte",
+status_ready:"préparé",status_opened:"ouvert dans Mail",status_shared:"partagé avec photos",
+report_title:"Compte rendu de {n}",autosaved:"Enregistré automatiquement dans la fiche de {n}.",no_email:"aucune adresse e-mail des parents",subject:"Objet",message:"Message",mail_lang:"Langue du compte rendu",
+edited_note:"Ceci est le texte modifié.",rebuild:"Régénérer à partir d’aujourd’hui",relang_confirm:"Votre texte modifié sera remplacé par un nouveau compte rendu dans la langue choisie. Continuer ?",
+share_hint:"Avec Partager, le texte et les photos vont ensemble dans Mail. Choisissez-y les parents comme destinataires.",share_no:"Impossible d’envoyer les photos directement sur cet appareil.",share_with:"Partager avec {p}",share_btn:"Partager avec photos",
+open_mail:"Ouvrir dans Mail",open_mail_nophotos:"Ouvrir dans Mail sans photos",copy:"Copier le texte",copied:"Texte copié",select_copy:"Sélectionnez et copiez le texte",share_fail:"Le partage avec photos a échoué sur cet appareil.",
+unknown_badge:"Badge inconnu",unknown_badge_sub:"Le badge {c} n’est lié à aucun enfant.",choose_child:"Choisissez l’enfant qui reçoit ce badge :",all_have_badge:"Tous les enfants ont déjà un badge. Modifiez un badge via Modifier la fiche.",
+none:"Aucun",in_use:"Déjà utilisé",fs_child:"Enfant",f_first:"Prénom",f_last:"Nom",f_name:"Nom",f_phone:"Téléphone",f_email:"E-mail",fs_emerg:"Contact en cas d’urgence",f_fullname:"Nom et prénom",f_relation:"Lien",
+fs_doctor:"Médecin traitant",f_doctor:"Nom du médecin",new_kid:"Nouvel enfant",form_sub:"Ces données alimentent toute l’application.",fs_allergies:"Allergies",allergy_ph:"Laisser vide si aucune connue",
+fs_lang:"Langue",f_lang_other:"Quelle langue ?",f_lang_other_ph:"Par exemple : turc",f_mail_lang:"Compte rendu en",fs_badge:"Badge et photo",f_badge:"Code du badge",badge_ph:"Scannez le badge maintenant",f_photo:"Photo de profil",del_profile:"Supprimer la photo de profil",
+f_symbol:"Symbole (affiché s’il n’y a pas de photo de profil)",del_kid:"Supprimer l’enfant",cancel:"Annuler",save:"Enregistrer",need_name:"Indiquez le prénom et le nom.",badge_taken:"Ce badge appartient déjà à {n}.",kid_saved:"Fiche de {n} enregistrée",
+csv_empty:"Le fichier ne contient aucun enfant.",csv_cols:"Les colonnes voornaam et naam manquent. Utilisez le modèle.",csv_done:"{a} ajouté(s), {u} mis à jour",
+last_backup:"Dernière sauvegarde : {d}",no_backup_yet:"Aucune sauvegarde n’a encore été faite.",backup_old:"Aucune sauvegarde des données de cet appareil depuis plus d’une semaine.",backup_none:"Aucune sauvegarde des données de cet appareil n’a encore été faite.",
+make_backup:"Faire une sauvegarde",backup_prep:"Préparation de la sauvegarde…",backup_save:"Enregistrer la sauvegarde ({s} Mo)",backup_fail:"La sauvegarde a échoué.",
+restore_invalid:"Ce n’est pas un fichier de sauvegarde valide.",restore_notours:"Ce n’est pas une sauvegarde Pimpapunt.",restore_confirm:"Restaurer la sauvegarde du {d} ?\nLes enfants, jours et comptes rendus de la sauvegarde remplacent les mêmes données sur cet appareil.",restoring:"Restauration…",restored:"Sauvegarde restaurée",
+storage_used:"Utilisé : {s} Mo. ",storage_ok:"Les données sont protégées contre le nettoyage automatique.",storage_warn:"Ouvrez Pimpapunt via l’icône de l’écran d’accueil, pour qu’iOS ne supprime pas les données.",storage_na:"Aucune information disponible.",computing:"Calcul…",
+is_in:"Arrivée de {n}",is_in_at:"Arrivée de {n} à {t}",leaves_at:"Départ de {n} à {t}. Le compte rendu est prêt.",badge_filled:"Badge renseigné",badge_linked:"Badge lié à {n}",dia_toast:"Change : {k}",
+confirm_del:"Supprimer cet enregistrement ?",confirm_delphoto:"Supprimer définitivement cette photo ?",confirm_delkid:"Retirer {n} de la liste ? Les journées et comptes rendus sont conservés.",kid_deleted:"Fiche de {n} supprimée",sign_saved:"Signature enregistrée",
+err_full:"Le stockage de cet appareil est plein. Faites une sauvegarde et supprimez d’anciennes photos.",err_save:"L’enregistrement a échoué{e}.",file_protocol:"Ouvrez Pimpapunt via une adresse web (https), pas comme fichier.",db_fail:"Impossible d’ouvrir le stockage de cet appareil. Vérifiez que la navigation privée est désactivée.",
+a_backup_h:"Sauvegarde",a_backup_p:"Toutes les données se trouvent uniquement sur cet appareil. Si l’appareil est perdu ou si Pimpapunt est supprimé, elles disparaissent. Faites donc une sauvegarde chaque semaine et conservez-la en lieu sûr, par exemple sur OneDrive ou une clé USB.",
+a_backup_nophotos:"Sauvegarde sans photos",a_backup_photos:"Avec les photos des 30 derniers jours",a_restore:"Restaurer une sauvegarde",a_csv_h:"Liste des enfants en CSV",
+a_csv_p:"Remplissez la liste dans Excel et importez-la ici. Utilisez le modèle vide pour avoir les bonnes colonnes. Les enfants existants sont reconnus par badge ou par nom et date de naissance.",
+a_csv_import:"Importer un CSV",a_csv_export:"Exporter en CSV",a_csv_template:"Modèle vide",a_report_h:"Compte rendu",a_sign:"Signature en bas de chaque compte rendu (vide = texte standard dans la langue du compte rendu)",a_sign_ph:"L’équipe de la crèche",a_storage_h:"Stockage sur cet appareil",
+age_m1:"{n} mois",age_mn:"{n} mois",age_y:"{n} an",age_yn:"{n} ans"},
+
+en:{lang_label:"Language",tab_today:"Today",tab_kids:"Children",tab_admin:"Settings",scan_ph:"Scan badge",
+count_long:" of {t} in",count_short:"/{t} in",
+st_absent:"Not here yet",st_out:"Left {t}",st_sleep:"Asleep since {t}",st_in:"In since {t}",
+empty_title:"No children yet",empty_text:"Add a child, or import the list under Settings.",add_kid:"Add child",loading:"Loading…",no_kids:"No children yet.",no_birth:"Date of birth missing",
+chip_allergy:"Allergy",chip_badge:"Badge",chip_nobadge:"No badge",close:"Close",allergy:"Allergy",time:"Time",time_hint:"empty = now",
+btn_out:"Check out",btn_in:"Check in",btn_in_again:"Back in",h_sleepdia:"Sleep and changes",sleep_start:"🌙 Start nap",sleep_end:"☀️ Awake",
+dia_wet:"Wet",dia_dirty:"Dirty",dia_both:"Wet and dirty",dia_dry:"Dry",h_note:"Note",note_ph:"For example: bottle 150 ml, ate well",add:"Add",h_today:"Today",
+tl_in:"Arrived",tl_out:"Left",tl_slept:"Slept until {t} ({d})",tl_sleeping:"Sleeping",tl_dia:"Change: {k}",nothing_today:"Nothing recorded today.",delete:"Delete",
+h_photos:"Photos",add_photo:"Add photo",no_photos:"No photos today yet.",photo:"Photo",del_photo:"Delete photo",photo_1:"{n} photo",photo_n:"{n} photos",
+mail_report:"Email daily report",mail_ready_at:" (prepared {t})",edit_kid:"Edit details",h_contact:"Contact and medical",h_reports:"Reports",h_history:"Previous days",
+f_address:"Address",f_birth:"Date of birth",f_lang:"Mother tongue",parent1:"Parent 1",parent2:"Parent 2",emergency:"Emergency",doctor:"Doctor",allergies:"Allergies",none_known:"None known",
+lang_nl:"Dutch",lang_fr:"French",lang_en:"English",lang_other:"Other language",report_in:"daily report in {l}",
+photos_saving:"Saving photos…",photos_added_1:"1 photo added",photos_added_n:"{n} photos added",
+no_history:"No previous days found.",hist_day:"Day",hist_in:"In",hist_out:"Out",hist_sleep:"Sleep",hist_dia:"Changes",hist_photos:"Photos",err_history:"Could not load history.",
+no_reports:"No reports yet. A report is saved as soon as it is prepared at check-out.",err_reports:"Could not load reports.",report_missing:"Report not found.",
+back:"Back",back_to:"Back to {n}",saved_at:" – saved at {t}",to:"To",reopen_mail:"Open in Mail again",save_txt:"Save as text",
+status_ready:"prepared",status_opened:"opened in Mail",status_shared:"shared with photos",
+report_title:"Daily report {n}",autosaved:"Saved automatically with {n}.",no_email:"no parent email address entered",subject:"Subject",message:"Message",mail_lang:"Report language",
+edited_note:"This is the edited text.",rebuild:"Rebuild from today",relang_confirm:"Your edited text will be replaced by a new report in the chosen language. Continue?",
+share_hint:"With Share, text and photos go to Mail together. Choose the parents as recipients there.",share_no:"Sending photos directly isn’t possible on this device.",share_with:"Share with {p}",share_btn:"Share with photos",
+open_mail:"Open in Mail",open_mail_nophotos:"Open in Mail without photos",copy:"Copy text",copied:"Text copied",select_copy:"Select and copy the text",share_fail:"Sharing with photos failed on this device.",
+unknown_badge:"Unknown badge",unknown_badge_sub:"Badge {c} isn’t linked to any child yet.",choose_child:"Choose the child who gets this badge:",all_have_badge:"All children already have a badge. Change one via Edit details.",
+none:"None",in_use:"Already in use",fs_child:"Child",f_first:"First name",f_last:"Last name",f_name:"Name",f_phone:"Phone",f_email:"Email",fs_emerg:"Emergency contact",f_fullname:"Full name",f_relation:"Relationship",
+fs_doctor:"Doctor",f_doctor:"Doctor’s name",new_kid:"New child",form_sub:"This information feeds the whole app.",fs_allergies:"Allergies",allergy_ph:"Leave empty if none are known",
+fs_lang:"Language",f_lang_other:"Which language?",f_lang_other_ph:"For example: Turkish",f_mail_lang:"Daily report in",fs_badge:"Badge and photo",f_badge:"Badge code",badge_ph:"Scan the badge now",f_photo:"Profile photo",del_profile:"Remove profile photo",
+f_symbol:"Symbol (shown when there is no profile photo)",del_kid:"Delete child",cancel:"Cancel",save:"Save",need_name:"Enter first and last name.",badge_taken:"This badge already belongs to {n}.",kid_saved:"{n} saved",
+csv_empty:"The file contains no children.",csv_cols:"The columns voornaam and naam are missing. Use the template.",csv_done:"{a} added, {u} updated",
+last_backup:"Last backup: {d}",no_backup_yet:"No backup has been made yet.",backup_old:"No backup of this device’s data has been made for over a week.",backup_none:"No backup of this device’s data has been made yet.",
+make_backup:"Make a backup",backup_prep:"Preparing backup…",backup_save:"Save backup ({s} MB)",backup_fail:"The backup could not be made.",
+restore_invalid:"This is not a valid backup file.",restore_notours:"This is not a Pimpapunt backup.",restore_confirm:"Restore the backup from {d}?\nChildren, days and reports in the backup overwrite the same data on this device.",restoring:"Restoring…",restored:"Backup restored",
+storage_used:"In use: {s} MB. ",storage_ok:"The data is protected from automatic clean-up.",storage_warn:"Open Pimpapunt from the home screen icon so iOS doesn’t clear the data.",storage_na:"No information available.",computing:"Calculating…",
+is_in:"{n} is in",is_in_at:"{n} checked in at {t}",leaves_at:"{n} left at {t}. The daily report is ready.",badge_filled:"Badge filled in",badge_linked:"Badge linked to {n}",dia_toast:"Change: {k}",
+confirm_del:"Delete this entry?",confirm_delphoto:"Permanently delete this photo?",confirm_delkid:"Remove {n} from the list? Daily records and reports are kept.",kid_deleted:"{n} removed",sign_saved:"Signature saved",
+err_full:"This device’s storage is full. Make a backup and delete old photos.",err_save:"Saving failed{e}.",file_protocol:"Open Pimpapunt via a web address (https), not as a file.",db_fail:"Storage on this device could not be opened. Check that private browsing is off.",
+a_backup_h:"Backup",a_backup_p:"All data is stored only on this device. If the device is lost or Pimpapunt is removed, it is gone. Make a backup every week and keep it somewhere safe, such as OneDrive or a USB stick.",
+a_backup_nophotos:"Backup without photos",a_backup_photos:"With photos from the last 30 days",a_restore:"Restore backup",a_csv_h:"Children list as CSV",
+a_csv_p:"Fill in the list in Excel and import it here. Use the empty template for the right columns. Existing children are matched by badge or by name and date of birth.",
+a_csv_import:"Import CSV",a_csv_export:"Export CSV",a_csv_template:"Empty template",a_report_h:"Daily report",a_sign:"Signature at the bottom of each report (empty = standard text in the report’s language)",a_sign_ph:"The daycare team",a_storage_h:"Storage on this device",
+age_m1:"{n} month",age_mn:"{n} months",age_y:"{n} year",age_yn:"{n} years"}
+};
+/* the daily report, written in the child's language */
+const MAIL={
+  nl:{subject:"Dagverslag {n} – {d}",hello:"Beste ouders,",intro:"Hier is het dagverslag van {n} van {d}.",arrived:"Aangekomen",left:"Vertrokken",still:"nog aanwezig",
+      sleep:"Slapen",sleep_line:"{a} tot {b} ({d})",no_sleep:"niet geslapen",dia:"Verversen",no_dia:"geen verversing geregistreerd",notes:"Notities",
+      photos_1:"Vandaag maakten we 1 foto.",photos_n:"Vandaag maakten we {n} foto’s.",bye:"Tot de volgende keer!",sign:"Het team van de opvang",
+      kinds:{wet:"nat",dirty:"vuil",both:"nat en vuil",dry:"droog"}},
+  fr:{subject:"Compte rendu de {n} – {d}",hello:"Chers parents,",intro:"Voici le compte rendu de la journée de {n}, {d}.",arrived:"Arrivée",left:"Départ",still:"encore à la crèche",
+      sleep:"Sieste",sleep_line:"de {a} à {b} ({d})",no_sleep:"pas de sieste",dia:"Changes",no_dia:"aucun change enregistré",notes:"Remarques",
+      photos_1:"Aujourd’hui, nous avons pris 1 photo.",photos_n:"Aujourd’hui, nous avons pris {n} photos.",bye:"À bientôt !",sign:"L’équipe de la crèche",
+      kinds:{wet:"mouillé",dirty:"selles",both:"mouillé et selles",dry:"sec"}},
+  en:{subject:"Daily report {n} – {d}",hello:"Dear parents,",intro:"Here is {n}’s daily report for {d}.",arrived:"Arrived",left:"Left",still:"still here",
+      sleep:"Sleep",sleep_line:"{a} to {b} ({d})",no_sleep:"no nap",dia:"Nappy changes",no_dia:"no changes recorded",notes:"Notes",
+      photos_1:"Today we took 1 photo.",photos_n:"Today we took {n} photos.",bye:"See you next time!",sign:"The daycare team",
+      kinds:{wet:"wet",dirty:"dirty",both:"wet and dirty",dry:"dry"}}
+};
+/* stored diaper values are the original Dutch words; map them to keys */
+const DIA_KEY={"nat":"wet","vuil":"dirty","nat en vuil":"both","droog":"dry"};
+const DIA_STORE={wet:"nat",dirty:"vuil",both:"nat en vuil",dry:"droog"};
+const STATUS_KEY={"klaargezet":"ready","geopend in Mail":"opened","gedeeld met foto’s":"shared","ready":"ready","opened":"opened","shared":"shared"};
+
+/* ================= settings ================= */
+const SETKEY="kapstok.settings";
+const SET = (()=>{ try{ return JSON.parse(localStorage.getItem(SETKEY)||"{}"); }catch(_){ return {}; } })();
+function saveSet(){ try{ localStorage.setItem(SETKEY, JSON.stringify(SET)); }catch(_){} }
+function detectLang(){ const n=(navigator.language||"nl").slice(0,2).toLowerCase(); return LANGS.includes(n)? n : "nl"; }
+let L = LANGS.includes(SET.lang)? SET.lang : detectLang();
+const fill=(s,v)=>String(s).replace(/\{(\w+)\}/g,(m,k)=> v && v[k]!=null ? v[k] : m);
+const t=(k,v)=>fill((T[L][k]!=null? T[L][k] : T.nl[k]!=null? T.nl[k] : k), v);
+const tm=(lang,k,v)=>fill(MAIL[lang][k], v);
+
 /* ================= helpers ================= */
 const $ = (s, r=document) => r.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pad = n => String(n).padStart(2,"0");
 const dayKey = (d=new Date()) => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
 const hhmm = iso => { if(!iso) return "–"; const d=new Date(iso); return pad(d.getHours())+":"+pad(d.getMinutes()); };
-const DAYS = ["zondag","maandag","dinsdag","woensdag","donderdag","vrijdag","zaterdag"];
-const MONTHS = ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
 const parseKey = key => { const [y,m,d]=key.split("-").map(Number); return new Date(y,m-1,d); };
-const longDate = key => { const dt=parseKey(key); return DAYS[dt.getDay()]+" "+dt.getDate()+" "+MONTHS[dt.getMonth()]; };
+const longDate = (key, lang=L) => { const dt=parseKey(key), c=CAL[lang]; return c.days[dt.getDay()]+" "+dt.getDate()+" "+c.months[dt.getMonth()]; };
+const shortDay = (key, lang=L) => { const dt=parseKey(key), c=CAL[lang]; return c.days[dt.getDay()].slice(0, lang==="nl"?2:3)+" "+dt.getDate()+" "+c.months[dt.getMonth()].slice(0,3); };
 const shortDate = key => { const dt=parseKey(key); return dt.getDate()+"/"+(dt.getMonth()+1); };
-const dur = (a,b) => { const m=Math.round((new Date(b)-new Date(a))/60000); if(m<60) return m+" min"; return Math.floor(m/60)+" u "+pad(m%60)+" min"; };
+const dur = (a,b,lang=L) => { const m=Math.round((new Date(b)-new Date(a))/60000); if(m<60) return m+" min"; return Math.floor(m/60)+" "+CAL[lang].h+" "+pad(m%60)+" min"; };
 const uid = () => (crypto.randomUUID ? crypto.randomUUID().replace(/-/g,"").slice(0,16) : Date.now().toString(36)+Math.random().toString(36).slice(2,8));
 const HUES = [205,160,28,340,265,95,190,12,300,48];
 const hue = s => { let h=0; for(const c of String(s)) h=(h*31+c.charCodeAt(0))>>>0; return HUES[h%HUES.length]; };
 const fullName = c => [c.voornaam, c.naam].filter(Boolean).join(" ");
 const safeName = s => String(s||"kind").replace(/[^\w-]+/g,"_");
 const normBadge = s => String(s||"").trim().toUpperCase();
+const photoCount = n => t(n===1?"photo_1":"photo_n",{n});
+const diaLabel = stored => t("dia_"+(DIA_KEY[stored]||"wet"));
 function age(bd){
   if(!bd) return ""; const b=new Date(bd), n=new Date(); if(isNaN(b)) return "";
   let months=(n.getFullYear()-b.getFullYear())*12+(n.getMonth()-b.getMonth()); if(n.getDate()<b.getDate()) months--;
-  if(months<0) return ""; if(months<24) return months+(months===1?" maand":" maanden");
-  const y=Math.floor(months/12), r=months%12; return y+" jaar"+(r? ", "+r+(r===1?" maand":" maanden"):"");
+  if(months<0) return "";
+  if(months<24) return t(months===1?"age_m1":"age_mn",{n:months});
+  const y=Math.floor(months/12), r=months%12;
+  const ys=t(y===1?"age_y":(T[L].age_yn?"age_yn":"age_y"),{n:y});
+  return ys+(r? ", "+t(r===1?"age_m1":"age_mn",{n:r}):"");
 }
+/* mother tongue */
+function langName(code){ return code? t("lang_"+code) : ""; }
+function motherTongue(c){ if(!c.moedertaal) return "–"; if(c.moedertaal==="other") return c.moedertaal_andere || t("lang_other"); return langName(c.moedertaal); }
+function mailLangOf(c){ if(LANGS.includes(c.moedertaal)) return c.moedertaal; if(LANGS.includes(c.mailtaal)) return c.mailtaal; return "nl"; }
+function parseLangValue(v){
+  const s=String(v||"").trim().toLowerCase(); if(!s) return {};
+  if(["nl","nederlands","néerlandais","dutch","vlaams"].includes(s)) return {moedertaal:"nl"};
+  if(["fr","frans","français","francais","french"].includes(s)) return {moedertaal:"fr"};
+  if(["en","engels","anglais","english"].includes(s)) return {moedertaal:"en"};
+  return {moedertaal:"other", moedertaal_andere:String(v).trim()};
+}
+
 let toastT;
-function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),3200); }
+function toast(msg){ const el=$("#toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),3200); }
+let noticeKey=null;
 function notice(html){ const n=$("#notice"); n.innerHTML=html||""; n.classList.toggle("show",!!html); }
 
-/* ================= settings (klein, in localStorage) ================= */
-const SETKEY="kapstok.settings";
-const SET = (()=>{ try{ return JSON.parse(localStorage.getItem(SETKEY)||"{}"); }catch(_){ return {}; } })();
-function saveSet(){ try{ localStorage.setItem(SETKEY, JSON.stringify(SET)); }catch(_){} }
+/* ================= static text ================= */
+function applyStatic(){
+  document.documentElement.lang = LOCALE[L];
+  document.querySelectorAll("[data-i]").forEach(el=>{ el.textContent=t(el.dataset.i); });
+  document.querySelectorAll("[data-iph]").forEach(el=>{ el.placeholder=t(el.dataset.iph); });
+  document.querySelectorAll("[data-ilabel]").forEach(el=>{ el.setAttribute("aria-label", t(el.dataset.ilabel)); });
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.lang===L)));
+}
+function setLang(l){
+  if(!LANGS.includes(l) || l===L) return;
+  L=l; SET.lang=l; saveSet(); applyStatic(); renderAll();
+  if(S.sheetMode==="child") renderSheet();
+  else if(S.sheetMode==="form") openForm(S.openChild);
+  else if(S.sheetMode) closeSheet();
+  if(!$("#view-admin").classList.contains("hidden")){ storageInfo(); }
+  checkBackupAge();
+}
 
 /* ================= IndexedDB ================= */
 const DB = {
@@ -367,9 +572,9 @@ const DB = {
   },
   run(store, mode, fn){
     return new Promise((res,rej)=>{
-      const t=DB.db.transaction(store,mode); const req=fn(t.objectStore(store)); let out;
+      const tx=DB.db.transaction(store,mode); const req=fn(tx.objectStore(store)); let out;
       if(req) req.onsuccess=()=>{ out=req.result; };
-      t.oncomplete=()=>res(out); t.onerror=()=>rej(t.error); t.onabort=()=>rej(t.error);
+      tx.oncomplete=()=>res(out); tx.onerror=()=>rej(tx.error); tx.onabort=()=>rej(tx.error);
     });
   },
   get:(st,k)=>DB.run(st,"readonly",s=>s.get(k)),
@@ -380,8 +585,8 @@ const DB = {
 };
 function failWrite(err){
   const n=err && err.name;
-  if(n==="QuotaExceededError") toast("De opslag op dit toestel is vol. Maak een back-up en verwijder oude foto’s.");
-  else toast("Opslaan lukte niet"+(n? " ("+n+")":"")+".");
+  if(n==="QuotaExceededError") toast(t("err_full"));
+  else toast(t("err_save",{e: n? " ("+n+")":""}));
 }
 
 /* ================= photos ================= */
@@ -426,11 +631,11 @@ const emptyEntry = () => ({ sessions:[], sleeps:[], diapers:[], notes:[], photos
 function entry(id){ const e=S.day && S.day.kids[id]; return Object.assign(emptyEntry(), e ? JSON.parse(JSON.stringify(e)) : {}); }
 function status(id){
   const e=entry(id); const last=e.sessions[e.sessions.length-1];
-  if(!last) return {state:"absent", label:"Nog niet binnen"};
-  if(last.out) return {state:"out", label:"Vertrokken "+hhmm(last.out)};
+  if(!last) return {state:"absent", label:t("st_absent")};
+  if(last.out) return {state:"out", label:t("st_out",{t:hhmm(last.out)})};
   const sl=e.sleeps[e.sleeps.length-1];
-  if(sl && !sl.end) return {state:"sleep", label:"Slaapt sinds "+hhmm(sl.start)};
-  return {state:"in", label:"Binnen sinds "+hhmm(last.in)};
+  if(sl && !sl.end) return {state:"sleep", label:t("st_sleep",{t:hhmm(sl.start)})};
+  return {state:"in", label:t("st_in",{t:hhmm(last.in)})};
 }
 async function loadAll(){
   const kids=await DB.all("children"); S.children=new Map(kids.map(c=>[c.id,c]));
@@ -443,24 +648,24 @@ function saveEntry(id, mutate){
   renderAll();
 }
 function at(){ const v=$("#act-time") && $("#act-time").value; if(!v) return new Date().toISOString(); const [h,m]=v.split(":").map(Number); const d=new Date(); d.setHours(h,m,0,0); return d.toISOString(); }
-function resetTime(){ const t=$("#act-time"); if(t) t.value=""; }
+function resetTime(){ const el=$("#act-time"); if(el) el.value=""; }
 
 /* ================= actions ================= */
-function checkIn(id,t){ saveEntry(id, e=>{ e.sessions.push({in:t||new Date().toISOString(), out:null}); }); }
-function checkOut(id,t){
-  const when=t||new Date().toISOString();
+function checkIn(id,tm){ saveEntry(id, e=>{ e.sessions.push({in:tm||new Date().toISOString(), out:null}); }); }
+function checkOut(id,tm){
+  const when=tm||new Date().toISOString();
   saveEntry(id, e=>{ const last=e.sessions[e.sessions.length-1]; if(last && !last.out) last.out=when; const sl=e.sleeps[e.sleeps.length-1]; if(sl && !sl.end) sl.end=when; });
 }
 function togglePresence(id){
   const st=status(id).state; const c=S.children.get(id); const now=new Date().toISOString();
-  if(st==="absent"||st==="out"){ checkIn(id,now); toast(c.voornaam+" is binnen om "+hhmm(now)); return "in"; }
-  checkOut(id,now); toast(c.voornaam+" vertrekt om "+hhmm(now)+". Het dagverslag staat klaar."); return "out";
+  if(st==="absent"||st==="out"){ checkIn(id,now); toast(t("is_in_at",{n:c.voornaam,t:hhmm(now)})); return "in"; }
+  checkOut(id,now); toast(t("leaves_at",{n:c.voornaam,t:hhmm(now)})); return "out";
 }
 
 /* ================= RFID ================= */
 function handleBadge(raw){
   const code=normBadge(raw); if(code.length<3 || !S.ready) return;
-  if(S.sheetMode==="form"){ const f=$("#f-badge"); if(f){ f.value=code; toast("Badge ingevuld"); } return; }
+  if(S.sheetMode==="form"){ const f=$("#f-badge"); if(f){ f.value=code; toast(t("badge_filled")); } return; }
   const kid=kidsSorted().find(c=>normBadge(c.badge)===code);
   if(!kid){ openLinkBadge(code); return; }
   const res=togglePresence(kid.id);
@@ -488,9 +693,9 @@ function avatarHTML(c){
   return `<div class="av" style="background:${bg}">${esc(ini)}</div>`;
 }
 function renderHeader(){
-  { const dt=parseKey(S.date); $("#today-label").innerHTML=`<span class="dl">${esc(longDate(S.date))}</span><span class="ds">${DAYS[dt.getDay()].slice(0,2)} ${dt.getDate()} ${MONTHS[dt.getMonth()].slice(0,3)}</span>`; }
+  $("#today-label").innerHTML=`<span class="dl">${esc(longDate(S.date))}</span><span class="ds">${esc(shortDay(S.date))}</span><span class="dm">${esc(shortDay(S.date).split(" ").slice(1).join(" "))}</span>`;
   const kids=kidsSorted(); const inside=kids.filter(c=>["in","sleep"].includes(status(c.id).state)).length;
-  $("#count").innerHTML = kids.length ? `<b>${inside}</b><span class="cl"> van ${kids.length} binnen</span><span class="cs">/${kids.length} binnen</span>` : "";
+  $("#count").innerHTML = kids.length ? `<b>${inside}</b><span class="cl">${esc(t("count_long",{t:kids.length}))}</span><span class="cs">${esc(t("count_short",{t:kids.length}))}</span>` : "";
 }
 function bugHead(state){
   const eyes = state==="sleep"
@@ -500,22 +705,22 @@ function bugHead(state){
 }
 function renderRack(){
   const rack=$("#rack"); const kids=kidsSorted();
-  if(!S.ready){ rack.innerHTML=`<div class="empty" style="grid-column:1/-1">Laden…</div>`; return; }
-  if(!kids.length){ rack.innerHTML=`<div class="empty" style="grid-column:1/-1"><h2>Nog geen kinderen</h2><p>Voeg een kind toe, of importeer de kinderlijst via Beheer.</p><button class="btn primary" data-act="go-kids">Kind toevoegen</button></div>`; return; }
+  if(!S.ready){ rack.innerHTML=`<div class="empty" style="grid-column:1/-1">${esc(t("loading"))}</div>`; return; }
+  if(!kids.length){ rack.innerHTML=`<div class="empty" style="grid-column:1/-1"><h2>${esc(t("empty_title"))}</h2><p>${esc(t("empty_text"))}</p><button class="btn primary" data-act="go-kids">${esc(t("add_kid"))}</button></div>`; return; }
   const prev=S.prevStates||{}; const next={};
   rack.innerHTML=kids.map(c=>{ const st=status(c.id); next[c.id]=st.state;
     const swing = prev[c.id] && prev[c.id]!==st.state ? " swing" : "";
     return `<button class="hook" data-open="${esc(c.id)}" data-state="${st.state}" aria-label="${esc(fullName(c))}, ${esc(st.label)}">
-      <span class="tagbox${swing}"><span class="ringwrap">${bugHead(st.state)}<span class="ring">${avatarHTML(c)}</span>${st.state==="sleep"?`<span class="zz" aria-hidden="true">z<small>z</small></span>`:""}${c.allergieen?`<span class="allergy-dot" title="Allergie">!</span>`:""}</span>
+      <span class="tagbox${swing}"><span class="ringwrap">${bugHead(st.state)}<span class="ring">${avatarHTML(c)}</span>${st.state==="sleep"?`<span class="zz" aria-hidden="true">z<small>z</small></span>`:""}${c.allergieen?`<span class="allergy-dot" title="${esc(t("allergy"))}">!</span>`:""}</span>
       <span class="nm">${esc(c.voornaam||"")}</span><span class="st">${esc(st.label)}</span></span></button>`; }).join("");
   S.prevStates=next;
 }
 function renderKidList(){
   const l=$("#kidlist"); const kids=kidsSorted();
-  if(!kids.length){ l.innerHTML=`<div class="empty">Nog geen kinderen.</div>`; return; }
+  if(!kids.length){ l.innerHTML=`<div class="empty">${esc(t("no_kids"))}</div>`; return; }
   l.innerHTML=kids.map(c=>`<button class="item" data-edit="${esc(c.id)}">${avatarHTML(c)}
-    <span><b>${esc(fullName(c))}</b><br><span class="sub">${esc(age(c.geboortedatum)||"Geboortedatum ontbreekt")}</span></span>
-    <span class="row" style="justify-content:flex-end">${c.allergieen?`<span class="chip alert">Allergie</span>`:""}${c.badge?`<span class="chip ok">Badge</span>`:`<span class="chip">Geen badge</span>`}</span></button>`).join("");
+    <span><b>${esc(fullName(c))}</b><br><span class="sub">${esc(age(c.geboortedatum)||t("no_birth"))}${c.moedertaal?" – "+esc(motherTongue(c)):""}</span></span>
+    <span class="row" style="justify-content:flex-end">${c.allergieen?`<span class="chip alert">${esc(t("chip_allergy"))}</span>`:""}${c.badge?`<span class="chip ok">${esc(t("chip_badge"))}</span>`:`<span class="chip">${esc(t("chip_nobadge"))}</span>`}</span></button>`).join("");
 }
 function renderAll(){ renderHeader(); renderRack(); renderKidList(); if(S.sheetMode==="child") renderSheet(); hydratePhotos(); }
 
@@ -524,107 +729,117 @@ function openSheet(mode){ S.sheetMode=mode; $("#scrim").classList.add("open"); d
 function closeSheet(){ S.sheetMode=null; S.openChild=null; $("#scrim").classList.remove("open"); document.body.style.overflow=""; }
 $("#scrim").addEventListener("click", ev=>{ if(ev.target.id==="scrim") closeSheet(); });
 document.addEventListener("keydown", ev=>{ if(ev.key==="Escape" && S.sheetMode) closeSheet(); });
+const closeBtn = () => `<button class="close" data-act="close" aria-label="${esc(t("close"))}">×</button>`;
 
 function openChild(id){ S.openChild=id; openSheet("child"); renderSheet(true); }
 function renderSheet(first){
   const c=S.children.get(S.openChild); if(!c){ closeSheet(); return; }
+  const loadingTxt=t("loading");
   const keepTime = !first && $("#act-time") ? $("#act-time").value : "";
   const keepNote = !first && $("#note") ? $("#note").value : "";
-  const keepH = !first && $("#histbox") ? {open:$("#histbox").open, html:$("#hist").innerHTML} : {open:false, html:"Laden…"};
-  const keepR = !first && $("#repbox") ? {open:$("#repbox").open, html:$("#reps").innerHTML} : {open:false, html:"Laden…"};
+  const keepC = !first && $("#contactbox") ? $("#contactbox").open : false;
+  const keepH = !first && $("#histbox") ? {open:$("#histbox").open} : {open:false};
+  const keepR = !first && $("#repbox") ? {open:$("#repbox").open} : {open:false};
   const scrollTop = $("#sheet").scrollTop;
   const e=entry(c.id); const st=status(c.id);
   const present = st.state==="in"||st.state==="sleep", sleeping = st.state==="sleep";
   const items=[];
-  e.sessions.forEach((s,i)=>{ items.push({t:s.in,k:"sessions",i,f:"in",col:"var(--present)",txt:"Binnengekomen"}); if(s.out) items.push({t:s.out,k:"sessions",i,f:"out",col:"var(--away)",txt:"Vertrokken"}); });
-  e.sleeps.forEach((s,i)=>items.push({t:s.start,k:"sleeps",i,col:"var(--sleep)",txt: s.end? "Geslapen tot "+hhmm(s.end)+" ("+dur(s.start,s.end)+")" : "Slaapt"}));
-  e.diapers.forEach((d,i)=>items.push({t:d.t,k:"diapers",i,col:"var(--diaper)",txt:"Verversen: "+d.kind}));
+  e.sessions.forEach((s,i)=>{ items.push({t:s.in,k:"sessions",i,f:"in",col:"var(--bug)",txt:t("tl_in")}); if(s.out) items.push({t:s.out,k:"sessions",i,f:"out",col:"var(--away)",txt:t("tl_out")}); });
+  e.sleeps.forEach((s,i)=>items.push({t:s.start,k:"sleeps",i,col:"var(--sleep)",txt: s.end? t("tl_slept",{t:hhmm(s.end),d:dur(s.start,s.end)}) : t("tl_sleeping")}));
+  e.diapers.forEach((d,i)=>items.push({t:d.t,k:"diapers",i,col:"var(--sun)",txt:t("tl_dia",{k:diaLabel(d.kind)})}));
   e.notes.forEach((n,i)=>items.push({t:n.t,k:"notes",i,col:"var(--muted)",txt:n.text}));
   items.sort((a,b)=>new Date(a.t)-new Date(b.t));
-  const ringCol = st.state==="in"?"var(--bug)":st.state==="sleep"?"var(--sleep)":"var(--line)";
+  const ringCol = st.state==="in"?"var(--bug)":st.state==="sleep"?"var(--bug-sleep)":"var(--line)";
   const dis = present? "" : "disabled";
+  const dia = k => `<button class="btn dia" data-act="dia" data-kind="${esc(DIA_STORE[k])}" ${dis}>${esc(t("dia_"+k))}</button>`;
   $("#sheet").innerHTML=`
   <div class="sh-head"><div class="ring" style="background:${ringCol}">${avatarHTML(c)}</div>
     <div><h2>${esc(fullName(c))}</h2><div class="sub">${esc(age(c.geboortedatum))}${age(c.geboortedatum)?" – ":""}${esc(st.label)}</div></div>
-    <button class="close" data-act="close" aria-label="Sluiten">×</button></div>
-  ${c.allergieen?`<div class="banner">Allergie: <span>${esc(c.allergieen)}</span></div>`:""}
-  <label class="timefield" style="margin-bottom:12px">Tijdstip <input type="time" id="act-time" value="${esc(keepTime)}"> <span>leeg = nu</span></label>
-  ${present ? `<button class="btn primary big" data-act="out">Vertrek registreren</button>`
-            : `<button class="btn go big" data-act="in">${st.state==="out"?"Opnieuw binnen":"Binnen melden"}</button>`}
-  <div class="block"><h3>Slapen en verversen</h3><div class="row">
-    <button class="btn sleep ${sleeping?"on":""}" data-act="sleep" ${dis}>${sleeping?"☀️ Wakker":"🌙 Start slaapje"}</button>
-    <button class="btn dia" data-act="dia" data-kind="nat" ${dis}>Nat</button>
-    <button class="btn dia" data-act="dia" data-kind="vuil" ${dis}>Vuil</button>
-    <button class="btn dia" data-act="dia" data-kind="nat en vuil" ${dis}>Nat en vuil</button>
-    <button class="btn dia" data-act="dia" data-kind="droog" ${dis}>Droog</button></div></div>
-  <div class="block"><h3>Notitie</h3>
-    <div class="note-in"><input id="note" placeholder="Bijvoorbeeld: flesje 150 ml, goed gegeten" value="${esc(keepNote)}"><button class="btn small" data-act="note">Toevoegen</button></div></div>
-  <div class="block"><h3>Vandaag</h3>
-    ${items.length? `<ul class="tl">${items.map(it=>`<li><time>${hhmm(it.t)}</time><span><i class="tag" style="background:${it.col}"></i>${esc(it.txt)}</span><button class="x" aria-label="Verwijderen" data-act="del" data-k="${it.k}" data-i="${it.i}" data-f="${it.f||""}">×</button></li>`).join("")}</ul>` : `<p class="sub" style="margin:0">Nog niets geregistreerd vandaag.</p>`}</div>
+    ${closeBtn()}</div>
+  ${c.allergieen?`<div class="banner">${esc(t("allergy"))}: <span>${esc(c.allergieen)}</span></div>`:""}
+  <label class="timefield" style="margin-bottom:12px">${esc(t("time"))} <input type="time" id="act-time" value="${esc(keepTime)}"> <span>${esc(t("time_hint"))}</span></label>
+  ${present ? `<button class="btn primary big" data-act="out">${esc(t("btn_out"))}</button>`
+            : `<button class="btn go big" data-act="in">${esc(t(st.state==="out"?"btn_in_again":"btn_in"))}</button>`}
+  <div class="block"><h3>${esc(t("h_sleepdia"))}</h3><div class="row">
+    <button class="btn sleep ${sleeping?"on":""}" data-act="sleep" ${dis}>${esc(t(sleeping?"sleep_end":"sleep_start"))}</button>
+    ${dia("wet")}${dia("dirty")}${dia("both")}${dia("dry")}</div></div>
+  <div class="block"><h3>${esc(t("h_note"))}</h3>
+    <div class="note-in"><input id="note" placeholder="${esc(t("note_ph"))}" value="${esc(keepNote)}"><button class="btn small" data-act="note">${esc(t("add"))}</button></div></div>
+  <div class="block"><h3>${esc(t("h_today"))}</h3>
+    ${items.length? `<ul class="tl">${items.map(it=>`<li><time>${hhmm(it.t)}</time><span><i class="tag" style="background:${it.col}"></i>${esc(it.txt)}</span><button class="x" aria-label="${esc(t("delete"))}" data-act="del" data-k="${it.k}" data-i="${it.i}" data-f="${it.f||""}">×</button></li>`).join("")}</ul>` : `<p class="sub" style="margin:0">${esc(t("nothing_today"))}</p>`}</div>
   <div class="block">
-    <div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">Foto’s</h3>
-      <label class="btn small filebtn">Foto toevoegen<input type="file" id="photo-in" accept="image/*" multiple></label></div>
-    ${e.photos.length? `<div class="photos">${e.photos.map((p,i)=>`<figure><img alt="Foto ${i+1}" data-photo="${esc(p.id)}"><figcaption>${hhmm(p.t)}</figcaption><button class="px" data-act="delphoto" data-i="${i}" aria-label="Foto verwijderen">×</button></figure>`).join("")}</div>` : `<p class="sub" style="margin:0">Nog geen foto’s vandaag.</p>`}</div>
+    <div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${esc(t("h_photos"))}</h3>
+      <label class="btn small filebtn">${esc(t("add_photo"))}<input type="file" id="photo-in" accept="image/*" multiple></label></div>
+    ${e.photos.length? `<div class="photos">${e.photos.map((p,i)=>`<figure><img alt="${esc(t("photo"))} ${i+1}" data-photo="${esc(p.id)}"><figcaption>${hhmm(p.t)}</figcaption><button class="px" data-act="delphoto" data-i="${i}" aria-label="${esc(t("del_photo"))}">×</button></figure>`).join("")}</div>` : `<p class="sub" style="margin:0">${esc(t("no_photos"))}</p>`}</div>
   <div class="block row">
-    <button class="btn" data-act="mail">Dagverslag mailen${e.mailedAt?" (klaargezet "+hhmm(e.mailedAt)+")":""}</button>
-    <button class="btn ghost" data-act="edit">Gegevens bewerken</button></div>
-  <div class="block"><details><summary>Contact en medisch</summary>${contactHTML(c)}</details></div>
-  <div class="block"><details id="repbox"${keepR.open?" open":""}><summary>Verslagen</summary><div id="reps">${keepR.html}</div></details></div>
-  <div class="block"><details id="histbox"${keepH.open?" open":""}><summary>Vorige dagen</summary><div id="hist">${keepH.html}</div></details></div>`;
+    <button class="btn" data-act="mail">${esc(t("mail_report"))}${e.mailedAt?esc(t("mail_ready_at",{t:hhmm(e.mailedAt)})):""}</button>
+    <button class="btn ghost" data-act="edit">${esc(t("edit_kid"))}</button></div>
+  <div class="block"><details id="contactbox"${keepC?" open":""}><summary>${esc(t("h_contact"))}</summary>${contactHTML(c)}</details></div>
+  <div class="block"><details id="repbox"${keepR.open?" open":""}><summary>${esc(t("h_reports"))}</summary><div id="reps">${esc(loadingTxt)}</div></details></div>
+  <div class="block"><details id="histbox"${keepH.open?" open":""}><summary>${esc(t("h_history"))}</summary><div id="hist">${esc(loadingTxt)}</div></details></div>`;
   $("#sheet").scrollTop = first? 0 : scrollTop;
   $("#photo-in").addEventListener("change", ev=>uploadPhotos(c.id, ev.target.files));
   $("#note").addEventListener("keydown", ev=>{ if(ev.key==="Enter"){ ev.preventDefault(); addNote(c.id); } });
-  const hb=$("#histbox"); hb.addEventListener("toggle", ()=>{ if(hb.open && $("#hist").textContent==="Laden…") loadHistory(c.id); });
-  const rb=$("#repbox"); rb.addEventListener("toggle", ()=>{ if(rb.open && $("#reps").textContent==="Laden…") loadReports(c.id); });
+  const hb=$("#histbox"); hb.addEventListener("toggle", ()=>{ if(hb.open) loadHistory(c.id); });
+  const rb=$("#repbox"); rb.addEventListener("toggle", ()=>{ if(rb.open) loadReports(c.id); });
+  if(keepH.open) loadHistory(c.id);
+  if(keepR.open) loadReports(c.id);
   hydratePhotos($("#sheet"));
 }
 function tel(n){ return n? `<a href="tel:${esc(String(n).replace(/[^\d+]/g,""))}">${esc(n)}</a>` : "–"; }
 function mailLink(n){ return n? `<a href="mailto:${esc(n)}">${esc(n)}</a>` : "–"; }
 function contactHTML(c){
+  const ml=mailLangOf(c);
+  const mtNote = c.moedertaal ? ` <span class="sub">(${esc(t("report_in",{l: L==="fr"? langName(ml).toLowerCase() : langName(ml)}))})</span>` : "";
   return `<dl class="info">
-    <dt>Adres</dt><dd>${esc(c.adres||"–")}</dd>
-    <dt>Geboortedatum</dt><dd>${esc(c.geboortedatum||"–")}</dd>
-    <dt>${esc(c.ouder1_naam||"Ouder 1")}</dt><dd>${tel(c.ouder1_tel)}<br>${mailLink(c.ouder1_email)}</dd>
-    <dt>${esc(c.ouder2_naam||"Ouder 2")}</dt><dd>${tel(c.ouder2_tel)}<br>${mailLink(c.ouder2_email)}</dd>
-    <dt>Bij nood</dt><dd>${esc(c.nood_naam||"–")}${c.nood_relatie?" ("+esc(c.nood_relatie)+")":""}<br>${tel(c.nood_tel)}</dd>
-    <dt>Huisarts</dt><dd>${esc(c.huisarts||"–")}<br>${tel(c.huisarts_tel)}</dd>
-    <dt>Allergieën</dt><dd>${esc(c.allergieen||"Geen gekend")}</dd></dl>`;
+    <dt>${esc(t("f_lang"))}</dt><dd><b>${esc(motherTongue(c))}</b>${mtNote}</dd>
+    <dt>${esc(t("f_address"))}</dt><dd>${esc(c.adres||"–")}</dd>
+    <dt>${esc(t("f_birth"))}</dt><dd>${esc(c.geboortedatum||"–")}</dd>
+    <dt>${esc(c.ouder1_naam||t("parent1"))}</dt><dd>${tel(c.ouder1_tel)}<br>${mailLink(c.ouder1_email)}</dd>
+    <dt>${esc(c.ouder2_naam||t("parent2"))}</dt><dd>${tel(c.ouder2_tel)}<br>${mailLink(c.ouder2_email)}</dd>
+    <dt>${esc(t("emergency"))}</dt><dd>${esc(c.nood_naam||"–")}${c.nood_relatie?" ("+esc(c.nood_relatie)+")":""}<br>${tel(c.nood_tel)}</dd>
+    <dt>${esc(t("doctor"))}</dt><dd>${esc(c.huisarts||"–")}<br>${tel(c.huisarts_tel)}</dd>
+    <dt>${esc(t("allergies"))}</dt><dd>${esc(c.allergieen||t("none_known"))}</dd></dl>`;
 }
 function addNote(id){ const v=$("#note").value.trim(); if(!v) return; $("#note").value=""; saveEntry(id, e=>e.notes.push({t:at(), text:v})); resetTime(); }
 
 async function uploadPhotos(id, files){
   if(!files || !files.length) return;
-  toast("Foto’s opslaan…"); let ok=0;
+  toast(t("photos_saving")); let ok=0;
   for(const f of files){
     try{ const pid=await storePhoto(f); saveEntry(id, e=>e.photos.push({t:new Date().toISOString(), id:pid})); ok++; }
     catch(err){ failWrite(err); }
   }
-  if(ok) toast(ok+(ok===1?" foto toegevoegd":" foto’s toegevoegd"));
+  if(ok) toast(ok===1? t("photos_added_1") : t("photos_added_n",{n:ok}));
 }
 
 async function loadHistory(id){
-  const box=$("#hist");
+  const box=$("#hist"); if(!box) return;
   try{
     const days=(await DB.all("days")).filter(d=>d.date!==S.date && d.kids && d.kids[id]).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,15);
-    if(!days.length){ box.innerHTML=`<p class="sub">Geen eerdere dagen gevonden.</p>`; return; }
-    box.innerHTML=`<div style="overflow-x:auto"><table class="hist"><thead><tr><th>Dag</th><th>In</th><th>Uit</th><th>Slaap</th><th>Verv.</th><th>Foto’s</th></tr></thead><tbody>${days.map(d=>{
+    if(!$("#hist")) return;
+    if(!days.length){ box.innerHTML=`<p class="sub">${esc(t("no_history"))}</p>`; return; }
+    box.innerHTML=`<div style="overflow-x:auto"><table class="hist"><thead><tr><th>${esc(t("hist_day"))}</th><th>${esc(t("hist_in"))}</th><th>${esc(t("hist_out"))}</th><th>${esc(t("hist_sleep"))}</th><th>${esc(t("hist_dia"))}</th><th>${esc(t("hist_photos"))}</th></tr></thead><tbody>${days.map(d=>{
       const e=Object.assign(emptyEntry(), d.kids[id]); const s0=e.sessions[0], sl=e.sessions[e.sessions.length-1];
       const mins=e.sleeps.filter(x=>x.end).reduce((a,x)=>a+(new Date(x.end)-new Date(x.start))/60000,0);
-      return `<tr><td>${esc(DAYS[parseKey(d.date).getDay()].slice(0,2))} ${esc(shortDate(d.date))}</td><td>${s0?hhmm(s0.in):"–"}</td><td>${sl&&sl.out?hhmm(sl.out):"–"}</td><td>${mins? Math.floor(mins/60)+"u"+pad(Math.round(mins%60)):"–"}</td><td>${e.diapers.length}</td><td>${e.photos.length}</td></tr>`; }).join("")}</tbody></table></div>`;
-  }catch(err){ box.textContent="Kon de geschiedenis niet laden."; }
+      return `<tr><td>${esc(CAL[L].days[parseKey(d.date).getDay()].slice(0,L==="nl"?2:3))} ${esc(shortDate(d.date))}</td><td>${s0?hhmm(s0.in):"–"}</td><td>${sl&&sl.out?hhmm(sl.out):"–"}</td><td>${mins? Math.floor(mins/60)+CAL[L].h+pad(Math.round(mins%60)):"–"}</td><td>${e.diapers.length}</td><td>${e.photos.length}</td></tr>`; }).join("")}</tbody></table></div>`;
+  }catch(err){ box.textContent=t("err_history"); }
 }
 
 /* ================= reports ================= */
 const reportKey = (id,date) => id+"|"+date;
 const saveReport = (id,date,data) => DB.put("reports", Object.assign({key:reportKey(id,date), childId:id, date}, data)).catch(failWrite);
+const statusText = s => s? t("status_"+(STATUS_KEY[s]||"ready")) : "";
 async function loadReports(id){
-  const box=$("#reps");
+  const box=$("#reps"); if(!box) return;
   try{
     const reps=(await DB.byIndex("reports","childId",id)).sort((a,b)=>b.date.localeCompare(a.date));
-    if(!reps.length){ box.innerHTML=`<p class="sub">Nog geen verslagen. Een verslag wordt bewaard zodra het bij vertrek klaargezet wordt.</p>`; return; }
+    if(!$("#reps")) return;
+    if(!reps.length){ box.innerHTML=`<p class="sub">${esc(t("no_reports"))}</p>`; return; }
     box.innerHTML=`<div class="list" style="margin-top:10px">${reps.map(d=>{ const n=(d.photos||[]).length;
-      return `<button class="item rep" data-report="${esc(d.date)}"><span><b>${esc(longDate(d.date))} ${esc(d.date.slice(0,4))}</b><br><span class="sub">${esc(d.status||"")}</span></span><span class="chip">${n} ${n===1?"foto":"foto’s"}</span></button>`; }).join("")}</div>`;
-  }catch(err){ box.textContent="Kon de verslagen niet laden."; }
+      const lg = d.lang && d.lang!==L ? " · "+langName(d.lang) : "";
+      return `<button class="item rep" data-report="${esc(d.date)}"><span><b>${esc(longDate(d.date))} ${esc(d.date.slice(0,4))}</b><br><span class="sub">${esc(statusText(d.status)+lg)}</span></span><span class="chip">${esc(photoCount(n))}</span></button>`; }).join("")}</div>`;
+  }catch(err){ box.textContent=t("err_reports"); }
 }
 async function openReport(id, date){
   const c=S.children.get(id); if(!c) return;
@@ -632,34 +847,38 @@ async function openReport(id, date){
   const d=await DB.get("reports", reportKey(id,date)).catch(()=>null);
   if(S.sheetMode!=="report") return;
   const sh=$("#sheet");
-  if(!d){ sh.innerHTML=`<div class="empty">Dit verslag werd niet gevonden.<br><br><button class="btn" data-act="back">Terug</button></div>`; return; }
+  if(!d){ sh.innerHTML=`<div class="empty">${esc(t("report_missing"))}<br><br><button class="btn" data-act="back">${esc(t("back"))}</button></div>`; return; }
   const to=d.to||[];
-  sh.innerHTML=`<div class="sh-head"><div><h2>${esc(d.subject||"Dagverslag")}</h2><div class="sub">${esc(d.status||"")}${d.updatedAt? " – laatst bewaard om "+hhmm(d.updatedAt):""}</div></div><button class="close" data-act="close" aria-label="Sluiten">×</button></div>
-    <div class="sub" style="overflow-wrap:anywhere">Aan: ${esc(to.join(", ")||"–")}</div>
+  sh.innerHTML=`<div class="sh-head"><div><h2>${esc(d.subject||t("report_title",{n:c.voornaam}))}</h2><div class="sub">${esc(statusText(d.status))}${d.updatedAt? esc(t("saved_at",{t:hhmm(d.updatedAt)})):""}</div></div>${closeBtn()}</div>
+    <div class="sub" style="overflow-wrap:anywhere">${esc(t("to"))}: ${esc(to.join(", ")||"–")}</div>
     <pre class="report">${esc(d.body||"")}</pre>
-    ${(d.photos||[]).length? `<div class="photos" style="margin-bottom:14px">${d.photos.map((p,i)=>`<figure><img alt="Foto ${i+1}" data-photo="${esc(p)}"></figure>`).join("")}</div>`:""}
+    ${(d.photos||[]).length? `<div class="photos" style="margin-bottom:14px">${d.photos.map((p,i)=>`<figure><img alt="${esc(t("photo"))} ${i+1}" data-photo="${esc(p)}"></figure>`).join("")}</div>`:""}
     <div class="row">
-      <a class="btn go" href="mailto:${esc(to.map(encodeURIComponent).join(","))}?subject=${esc(encodeURIComponent(d.subject||""))}&amp;body=${esc(encodeURIComponent(d.body||""))}">Opnieuw openen in Mail</a>
-      <button class="btn" id="r-dl" type="button">Bewaren als tekst</button>
-      <button class="btn ghost" data-act="back">Terug naar ${esc(c.voornaam)}</button></div>`;
+      <a class="btn go" href="mailto:${esc(to.map(encodeURIComponent).join(","))}?subject=${esc(encodeURIComponent(d.subject||""))}&amp;body=${esc(encodeURIComponent(d.body||""))}">${esc(t("reopen_mail"))}</a>
+      <button class="btn" id="r-dl" type="button">${esc(t("save_txt"))}</button>
+      <button class="btn ghost" data-act="back">${esc(t("back_to",{n:c.voornaam}))}</button></div>`;
   $("#r-dl").addEventListener("click", ()=>saveFile(`dagverslag-${safeName(c.voornaam)}-${date}.txt`, new Blob([(d.subject||"")+"\n\n"+(d.body||"")],{type:"text/plain"})));
   hydratePhotos(sh);
 }
 
 /* ================= mail ================= */
-function mailBody(c, e, date){
-  const L=[]; const s0=e.sessions[0], sl=e.sessions[e.sessions.length-1];
-  L.push("Beste ouders,","",`Hier is het dagverslag van ${c.voornaam} van ${longDate(date)}.`,"");
-  L.push("Aangekomen: "+(s0?hhmm(s0.in):"–"));
-  L.push("Vertrokken: "+(sl&&sl.out?hhmm(sl.out):"nog aanwezig"));
-  L.push("","Slapen");
-  if(e.sleeps.length) e.sleeps.forEach(x=>L.push(`- ${hhmm(x.start)} tot ${x.end?hhmm(x.end)+" ("+dur(x.start,x.end)+")":"…"}`)); else L.push("- niet geslapen");
-  L.push("","Verversen");
-  if(e.diapers.length) e.diapers.slice().sort((a,b)=>new Date(a.t)-new Date(b.t)).forEach(d=>L.push(`- ${hhmm(d.t)} ${d.kind}`)); else L.push("- geen verversing geregistreerd");
-  if(e.notes.length){ L.push("","Notities"); e.notes.slice().sort((a,b)=>new Date(a.t)-new Date(b.t)).forEach(n=>L.push(`- ${hhmm(n.t)} ${n.text}`)); }
-  if(e.photos.length) L.push("",`Vandaag maakten we ${e.photos.length} ${e.photos.length===1?"foto":"foto’s"}.`);
-  L.push("","Tot de volgende keer!", SET.sign||"Het team van de opvang");
-  return L.join("\n");
+function mailSubject(c, date, lang){ return tm(lang,"subject",{n:c.voornaam, d:longDate(date,lang)}); }
+function mailBody(c, e, date, lang){
+  const M=MAIL[lang]; const Lx=[]; const s0=e.sessions[0], sl=e.sessions[e.sessions.length-1];
+  const byTime=(a,b)=>new Date(a.t)-new Date(b.t);
+  Lx.push(M.hello,"",tm(lang,"intro",{n:c.voornaam, d:longDate(date,lang)}),"");
+  const col = lang==="fr"? " : " : ": ";
+  Lx.push(M.arrived+col+(s0?hhmm(s0.in):"–"));
+  Lx.push(M.left+col+(sl&&sl.out?hhmm(sl.out):M.still));
+  Lx.push("",M.sleep);
+  if(e.sleeps.length) e.sleeps.forEach(x=>Lx.push("- "+tm(lang,"sleep_line",{a:hhmm(x.start), b:x.end?hhmm(x.end):"…", d:x.end?dur(x.start,x.end,lang):"…"})));
+  else Lx.push("- "+M.no_sleep);
+  Lx.push("",M.dia);
+  if(e.diapers.length) e.diapers.slice().sort(byTime).forEach(d=>Lx.push(`- ${hhmm(d.t)} ${M.kinds[DIA_KEY[d.kind]||"wet"]}`)); else Lx.push("- "+M.no_dia);
+  if(e.notes.length){ Lx.push("",M.notes); e.notes.slice().sort(byTime).forEach(n=>Lx.push(`- ${hhmm(n.t)} ${n.text}`)); }
+  if(e.photos.length) Lx.push("", e.photos.length===1? M.photos_1 : tm(lang,"photos_n",{n:e.photos.length}));
+  Lx.push("",M.bye, SET.sign||M.sign);
+  return Lx.join("\n");
 }
 let shareFiles=[];
 async function prepareShareFiles(e, c, date){
@@ -671,46 +890,54 @@ async function prepareShareFiles(e, c, date){
   const btn=$("#m-share"); if(!btn) return;
   let ok=false; try{ ok = shareFiles.length>0 && !!navigator.canShare && navigator.canShare({files:shareFiles}); }catch(_){}
   btn.classList.toggle("hidden", !ok);
-  btn.textContent=`Delen met ${shareFiles.length} ${shareFiles.length===1?"foto":"foto’s"}`;
-  const hint=$("#m-hint"); if(hint && !ok && e.photos.length) hint.textContent="Foto’s rechtstreeks meesturen lukt niet op dit toestel.";
+  btn.textContent=t("share_with",{p:photoCount(shareFiles.length)});
+  const hint=$("#m-hint"); if(hint && !ok && e.photos.length) hint.textContent=t("share_no");
 }
 async function openMail(id){
   const c=S.children.get(id); if(!c) return;
   const e=entry(id); const date=S.date; S.openChild=id; openSheet("mail");
   const to=[c.ouder1_email,c.ouder2_email].filter(Boolean);
-  const freshSubject=()=>`Dagverslag ${c.voornaam} – ${longDate(date)}`;
-  let subject=freshSubject(), body=mailBody(c,e,date), edited=false, status="klaargezet";
+  let lang=mailLangOf(c);
+  let edited=false, status="ready";
   const prev=await DB.get("reports", reportKey(id,date)).catch(()=>null);
-  if(prev){ status=prev.status||status; if(prev.edited){ subject=prev.subject; body=prev.body; edited=true; } }
+  if(prev){ status=STATUS_KEY[prev.status]||"ready"; if(prev.lang && LANGS.includes(prev.lang)) lang=prev.lang; if(prev.edited) edited=true; }
+  let subject = edited? prev.subject : mailSubject(c,date,lang);
+  let body = edited? prev.body : mailBody(c,e,date,lang);
   if(S.sheetMode!=="mail" || S.openChild!==id) return;
   $("#sheet").innerHTML=`
-    <div class="sh-head"><div><h2>Dagverslag ${esc(c.voornaam)}</h2><div class="sub">Wordt automatisch bewaard bij ${esc(c.voornaam)}.</div></div><button class="close" data-act="close" aria-label="Sluiten">×</button></div>
+    <div class="sh-head"><div><h2>${esc(t("report_title",{n:c.voornaam}))}</h2><div class="sub">${esc(t("autosaved",{n:c.voornaam}))}</div></div>${closeBtn()}</div>
     <div class="mailbox">
-      <div class="sub" style="margin-bottom:8px;overflow-wrap:anywhere">Aan: ${to.length? esc(to.join(", ")) : `<b style="color:var(--alert)">geen e-mailadres van de ouders ingevuld</b>`}</div>
-      <label class="f wide">Onderwerp<input id="m-subj" value="${esc(subject)}"></label>
-      <label class="f wide" style="margin-top:10px">Bericht<textarea id="m-body">${esc(body)}</textarea></label>
+      <div class="sub" style="margin-bottom:8px;overflow-wrap:anywhere">${esc(t("to"))}: ${to.length? esc(to.join(", ")) : `<b style="color:var(--alert)">${esc(t("no_email"))}</b>`}</div>
+      <div class="grid2">
+        <label class="f">${esc(t("mail_lang"))}<select id="m-lang">${LANGS.map(l=>`<option value="${l}"${l===lang?" selected":""}>${esc(t("lang_"+l))}</option>`).join("")}</select></label>
+        <div class="f"><span>${esc(t("f_lang"))}</span><span class="mt">${esc(motherTongue(c))}</span></div>
+      </div>
+      <label class="f wide" style="margin-top:10px">${esc(t("subject"))}<input id="m-subj" value="${esc(subject)}"></label>
+      <label class="f wide" style="margin-top:10px">${esc(t("message"))}<textarea id="m-body">${esc(body)}</textarea></label>
     </div>
-    <p id="m-edited" class="row${edited?"":" hidden"} sub">Dit is de aangepaste tekst. <button class="btn small ghost" id="m-refresh" type="button">Opnieuw opbouwen uit vandaag</button></p>
-    ${e.photos.length?`<p id="m-hint" class="sub">Met Delen gaan tekst en foto’s samen naar Mail. Kies daar de ouders als ontvanger.</p>`:""}
+    <p id="m-edited" class="row${edited?"":" hidden"} sub">${esc(t("edited_note"))} <button class="btn small ghost" id="m-refresh" type="button">${esc(t("rebuild"))}</button></p>
+    ${e.photos.length?`<p id="m-hint" class="sub">${esc(t("share_hint"))}</p>`:""}
     <div class="row" style="margin-top:14px">
-      <button class="btn go hidden" id="m-share" type="button">Delen met foto’s</button>
-      <a class="btn ${e.photos.length?"":"go"}" id="m-open">Openen in Mail${e.photos.length?" zonder foto’s":""}</a>
-      <button class="btn" data-act="copy">Tekst kopiëren</button>
-      <button class="btn ghost" data-act="back">Terug naar ${esc(c.voornaam)}</button>
+      <button class="btn go hidden" id="m-share" type="button">${esc(t("share_btn"))}</button>
+      <a class="btn ${e.photos.length?"":"go"}" id="m-open">${esc(t(e.photos.length?"open_mail_nophotos":"open_mail"))}</a>
+      <button class="btn" data-act="copy">${esc(t("copy"))}</button>
+      <button class="btn ghost" data-act="back">${esc(t("back_to",{n:c.voornaam}))}</button>
     </div>`;
-  const subj=$("#m-subj"), bd=$("#m-body");
-  const record=()=>({to, subject:subj.value, body:bd.value, photos:e.photos.map(p=>p.id), status, edited, updatedAt:new Date().toISOString()});
+  const subj=$("#m-subj"), bd=$("#m-body"), ls=$("#m-lang");
+  const record=()=>({to, subject:subj.value, body:bd.value, lang, photos:e.photos.map(p=>p.id), status, edited, updatedAt:new Date().toISOString()});
   const upd=()=>{ $("#m-open").href=`mailto:${to.map(encodeURIComponent).join(",")}?subject=${encodeURIComponent(subj.value)}&body=${encodeURIComponent(bd.value)}`; };
   upd(); saveReport(id,date,record());
   let tmr;
+  const rebuild=()=>{ clearTimeout(tmr); subj.value=mailSubject(c,date,lang); bd.value=mailBody(c,entry(id),date,lang); edited=false; $("#m-edited").classList.add("hidden"); upd(); saveReport(id,date,record()); };
   const onEdit=()=>{ upd(); if(!edited){ edited=true; $("#m-edited").classList.remove("hidden"); } clearTimeout(tmr); tmr=setTimeout(()=>saveReport(id,date,record()),800); };
   subj.addEventListener("input",onEdit); bd.addEventListener("input",onEdit);
-  $("#m-refresh").addEventListener("click", ()=>{ clearTimeout(tmr); subj.value=freshSubject(); bd.value=mailBody(c,entry(id),date); edited=false; $("#m-edited").classList.add("hidden"); upd(); saveReport(id,date,record()); });
+  ls.addEventListener("change", ()=>{ if(edited && !confirm(t("relang_confirm"))){ ls.value=lang; return; } lang=ls.value; rebuild(); });
+  $("#m-refresh").addEventListener("click", rebuild);
   const markSent=st=>{ clearTimeout(tmr); status=st; saveReport(id,date,record()); saveEntry(id, x=>{ x.mailedAt=new Date().toISOString(); }); };
-  $("#m-open").addEventListener("click", ()=>markSent("geopend in Mail"));
+  $("#m-open").addEventListener("click", ()=>markSent("opened"));
   $("#m-share").addEventListener("click", async ()=>{
-    try{ await navigator.share({title:subj.value, text:subj.value+"\n\n"+bd.value, files:shareFiles}); markSent("gedeeld met foto’s"); }
-    catch(err){ if(err && err.name==="AbortError") return; toast("Delen met foto’s lukte niet op dit toestel."); }
+    try{ await navigator.share({title:subj.value, text:subj.value+"\n\n"+bd.value, files:shareFiles}); markSent("shared"); }
+    catch(err){ if(err && err.name==="AbortError") return; toast(t("share_fail")); }
   });
   prepareShareFiles(e, c, date);
 }
@@ -719,8 +946,8 @@ async function openMail(id){
 function openLinkBadge(code){
   openSheet("link");
   const kids=kidsSorted().filter(c=>!c.badge);
-  $("#sheet").innerHTML=`<div class="sh-head"><div><h2>Onbekende badge</h2><div class="sub">Badge ${esc(code)} is nog aan geen enkel kind gekoppeld.</div></div><button class="close" data-act="close" aria-label="Sluiten">×</button></div>
-  ${kids.length? `<p>Kies het kind dat deze badge krijgt:</p><div class="list">${kids.map(c=>`<button class="item" data-link="${esc(c.id)}" data-code="${esc(code)}">${avatarHTML(c)}<span><b>${esc(fullName(c))}</b></span><span></span></button>`).join("")}</div>` : `<p>Alle kinderen hebben al een badge. Pas een badge aan via Gegevens bewerken.</p>`}`;
+  $("#sheet").innerHTML=`<div class="sh-head"><div><h2>${esc(t("unknown_badge"))}</h2><div class="sub">${esc(t("unknown_badge_sub",{c:code}))}</div></div>${closeBtn()}</div>
+  ${kids.length? `<p>${esc(t("choose_child"))}</p><div class="list">${kids.map(c=>`<button class="item" data-link="${esc(c.id)}" data-code="${esc(code)}">${avatarHTML(c)}<span><b>${esc(fullName(c))}</b></span><span></span></button>`).join("")}</div>` : `<p>${esc(t("all_have_badge"))}</p>`}`;
   hydratePhotos($("#sheet"));
 }
 
@@ -730,45 +957,58 @@ function symPicker(c){
   const used=new Set(kidsSorted().filter(k=>k.id!==c.id && k.symbool).map(k=>k.symbool));
   const cur=c.symbool||"";
   const list=SYMBOLS.includes(cur)||!cur? SYMBOLS : [cur, ...SYMBOLS];
-  return `<button type="button" class="none" data-sym="" aria-pressed="${!cur}">Geen</button>`+
-    list.map(s=>`<button type="button" data-sym="${esc(s)}" aria-pressed="${s===cur}" class="${used.has(s)?"used":""}" title="${used.has(s)?"Al in gebruik":""}">${esc(s)}</button>`).join("");
+  return `<button type="button" class="none" data-sym="" aria-pressed="${!cur}">${esc(t("none"))}</button>`+
+    list.map(s=>`<button type="button" data-sym="${esc(s)}" aria-pressed="${s===cur}" class="${used.has(s)?"used":""}" title="${used.has(s)?esc(t("in_use")):""}">${esc(s)}</button>`).join("");
 }
 const FIELDS=[
- ["Kind",[["voornaam","Voornaam","text",1],["naam","Naam","text",1],["geboortedatum","Geboortedatum","date"],["adres","Adres","text",0,1]]],
- ["Ouder 1",[["ouder1_naam","Naam","text"],["ouder1_tel","Telefoon","tel"],["ouder1_email","E-mail","email",0,1]]],
- ["Ouder 2",[["ouder2_naam","Naam","text"],["ouder2_tel","Telefoon","tel"],["ouder2_email","E-mail","email",0,1]]],
- ["Contactpersoon bij nood",[["nood_naam","Naam en voornaam","text"],["nood_relatie","Relatie","text"],["nood_tel","Telefoon","tel"]]],
- ["Huisarts",[["huisarts","Naam huisarts","text"],["huisarts_tel","Telefoon","tel"]]],
+ ["fs_child",[["voornaam","f_first","text",1],["naam","f_last","text",1],["geboortedatum","f_birth","date"],["adres","f_address","text",0,1]]],
+ ["parent1",[["ouder1_naam","f_name","text"],["ouder1_tel","f_phone","tel"],["ouder1_email","f_email","email",0,1]]],
+ ["parent2",[["ouder2_naam","f_name","text"],["ouder2_tel","f_phone","tel"],["ouder2_email","f_email","email",0,1]]],
+ ["fs_emerg",[["nood_naam","f_fullname","text"],["nood_relatie","f_relation","text"],["nood_tel","f_phone","tel"]]],
+ ["fs_doctor",[["huisarts","f_doctor","text"],["huisarts_tel","f_phone","tel"]]],
 ];
 function openForm(id){
   const c = id ? S.children.get(id) : {};
   S.openChild=id||null; openSheet("form");
-  $("#sheet").innerHTML=`<div class="sh-head"><div><h2>${id?esc(fullName(c)):"Nieuw kind"}</h2><div class="sub">Deze gegevens voeden de hele app.</div></div><button class="close" data-act="close" aria-label="Sluiten">×</button></div>
+  const mt=c.moedertaal||"";
+  const fsHTML=([lg,fs])=>`<fieldset><legend>${esc(t(lg))}</legend><div class="grid">${fs.map(([k,l,ty,req,wide])=>`<label class="f${wide?" wide":""}">${esc(t(l))}${req?" *":""}<input name="${k}" type="${ty}" value="${esc(c[k]||"")}" ${ty==="email"?'autocapitalize="off"':""}></label>`).join("")}</div></fieldset>`;
+  $("#sheet").innerHTML=`<div class="sh-head"><div><h2>${id?esc(fullName(c)):esc(t("new_kid"))}</h2><div class="sub">${esc(t("form_sub"))}</div></div>${closeBtn()}</div>
   <form id="kidform" novalidate>
-   ${FIELDS.map(([lg,fs])=>`<fieldset><legend>${lg}</legend><div class="grid">${fs.map(([k,l,t,req,wide])=>`<label class="f${wide?" wide":""}">${l}${req?" *":""}<input name="${k}" type="${t}" value="${esc(c[k]||"")}" ${t==="email"?'autocapitalize="off"':""}></label>`).join("")}</div></fieldset>`).join("")}
-   <fieldset><legend>Allergieën</legend><label class="f wide"><textarea name="allergieen" rows="2" placeholder="Leeg laten als er geen gekend zijn">${esc(c.allergieen||"")}</textarea></label></fieldset>
-   <fieldset><legend>Badge en foto</legend><div class="grid">
-     <label class="f">Badgecode<input id="f-badge" name="badge" value="${esc(c.badge||"")}" placeholder="Scan de badge nu" autocapitalize="characters"></label>
-     <label class="f">Profielfoto<input type="file" id="f-photo" accept="image/*">${c.photo?`<span class="row" style="gap:6px"><input type="checkbox" name="delphoto" style="min-height:0;width:20px;height:20px"> Profielfoto verwijderen</span>`:""}</label>
-     <div class="f wide"><span>Symbool (wordt getoond als er geen profielfoto is)</span>
+   ${fsHTML(FIELDS[0])}
+   <fieldset><legend>${esc(t("fs_lang"))}</legend><div class="grid">
+     <label class="f">${esc(t("f_lang"))}<select name="moedertaal" id="f-mt">
+       <option value=""${!mt?" selected":""}>–</option>
+       ${LANGS.map(l=>`<option value="${l}"${mt===l?" selected":""}>${esc(t("lang_"+l))}</option>`).join("")}
+       <option value="other"${mt==="other"?" selected":""}>${esc(t("lang_other"))}</option></select></label>
+     <label class="f${mt==="other"?"":" hidden"}" id="f-mt-other">${esc(t("f_lang_other"))}<input name="moedertaal_andere" value="${esc(c.moedertaal_andere||"")}" placeholder="${esc(t("f_lang_other_ph"))}"></label>
+     <label class="f${mt==="other"?"":" hidden"}" id="f-mail-lang">${esc(t("f_mail_lang"))}<select name="mailtaal">${LANGS.map(l=>`<option value="${l}"${(c.mailtaal||"nl")===l?" selected":""}>${esc(t("lang_"+l))}</option>`).join("")}</select></label>
+   </div></fieldset>
+   ${FIELDS.slice(1).map(fsHTML).join("")}
+   <fieldset><legend>${esc(t("fs_allergies"))}</legend><label class="f wide"><textarea name="allergieen" rows="2" placeholder="${esc(t("allergy_ph"))}">${esc(c.allergieen||"")}</textarea></label></fieldset>
+   <fieldset><legend>${esc(t("fs_badge"))}</legend><div class="grid">
+     <label class="f">${esc(t("f_badge"))}<input id="f-badge" name="badge" value="${esc(c.badge||"")}" placeholder="${esc(t("badge_ph"))}" autocapitalize="characters"></label>
+     <label class="f">${esc(t("f_photo"))}<input type="file" id="f-photo" accept="image/*">${c.photo?`<span class="row" style="gap:6px"><input type="checkbox" name="delphoto" style="min-height:0;width:20px;height:20px"> ${esc(t("del_profile"))}</span>`:""}</label>
+     <div class="f wide"><span>${esc(t("f_symbol"))}</span>
        <input type="hidden" name="symbool" id="f-sym" value="${esc(c.symbool||"")}">
        <div class="symgrid" id="symgrid">${symPicker(c)}</div></div>
    </div></fieldset>
    <div class="row" style="justify-content:space-between">
-     ${id?`<button type="button" class="btn danger" data-act="delete-kid">Kind verwijderen</button>`:"<span></span>"}
-     <div class="row"><button type="button" class="btn ghost" data-act="close">Annuleren</button><button class="btn primary" type="submit">Opslaan</button></div>
+     ${id?`<button type="button" class="btn danger" data-act="delete-kid">${esc(t("del_kid"))}</button>`:"<span></span>"}
+     <div class="row"><button type="button" class="btn ghost" data-act="close">${esc(t("cancel"))}</button><button class="btn primary" type="submit">${esc(t("save"))}</button></div>
    </div>
   </form>`;
   $("#kidform").addEventListener("submit", ev=>{ ev.preventDefault(); saveKid(id, ev.target); });
+  $("#f-mt").addEventListener("change", ev=>{ const o=ev.target.value==="other"; $("#f-mt-other").classList.toggle("hidden",!o); $("#f-mail-lang").classList.toggle("hidden",!o); });
   $("#symgrid").addEventListener("click", ev=>{ const b=ev.target.closest("button[data-sym]"); if(!b) return;
     $("#f-sym").value=b.dataset.sym; $("#symgrid").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", String(x===b))); });
 }
 async function saveKid(id, form){
   const fd=new FormData(form); const data={};
   for(const [k,v] of fd.entries()){ if(typeof v==="string") data[k]=v.trim(); }
-  if(!data.voornaam||!data.naam){ toast("Vul voornaam en naam in."); return; }
+  if(!data.voornaam||!data.naam){ toast(t("need_name")); return; }
   data.badge=normBadge(data.badge);
-  if(data.badge){ const dup=kidsSorted().find(c=>c.id!==id && normBadge(c.badge)===data.badge); if(dup){ toast("Deze badge hoort al bij "+fullName(dup)+"."); return; } }
+  if(data.badge){ const dup=kidsSorted().find(c=>c.id!==id && normBadge(c.badge)===data.badge); if(dup){ toast(t("badge_taken",{n:fullName(dup)})); return; } }
+  if(data.moedertaal!=="other"){ delete data.moedertaal_andere; delete data.mailtaal; }
   const newId=id||uid(); const old=id? S.children.get(id):{};
   data.id=newId; data.photo=old.photo||null;
   if(data.delphoto){ if(data.photo) DB.del("photos",data.photo).catch(()=>{}); data.photo=null; } delete data.delphoto;
@@ -776,12 +1016,12 @@ async function saveKid(id, form){
     const pf=$("#f-photo"); if(pf && pf.files && pf.files[0]) data.photo=await storePhoto(pf.files[0]);
     data.updatedAt=new Date().toISOString();
     await DB.put("children", data); S.children.set(newId, data);
-    toast(data.voornaam+" is opgeslagen"); closeSheet(); renderAll();
+    toast(t("kid_saved",{n:data.voornaam})); closeSheet(); renderAll();
   }catch(err){ failWrite(err); }
 }
 
 /* ================= CSV ================= */
-const CSV_COLS=["voornaam","naam","geboortedatum","adres","ouder1_naam","ouder1_email","ouder1_tel","ouder2_naam","ouder2_email","ouder2_tel","nood_naam","nood_relatie","nood_tel","huisarts","huisarts_tel","allergieen","badge","symbool"];
+const CSV_COLS=["voornaam","naam","geboortedatum","adres","moedertaal","moedertaal_andere","mailtaal","ouder1_naam","ouder1_email","ouder1_tel","ouder2_naam","ouder2_email","ouder2_tel","nood_naam","nood_relatie","nood_tel","huisarts","huisarts_tel","allergieen","badge","symbool"];
 function parseCSV(text){
   text=text.replace(/^\uFEFF/,"");
   const first=text.split(/\r?\n/)[0]||""; const sep=(first.split(";").length>=first.split(",").length)?";":",";
@@ -801,29 +1041,35 @@ const csvCell = v => { v=String(v??""); return /[;"\n]/.test(v)? '"'+v.replace(/
 const toCSV = list => "\uFEFF"+[CSV_COLS.join(";"), ...list.map(c=>CSV_COLS.map(k=>csvCell(c[k])).join(";"))].join("\r\n");
 $("#csv-in").addEventListener("change", async ev=>{
   const f=ev.target.files[0]; ev.target.value=""; if(!f) return;
-  const rows=parseCSV(await f.text()); if(rows.length<2){ toast("Het bestand bevat geen kinderen."); return; }
+  const rows=parseCSV(await f.text()); if(rows.length<2){ toast(t("csv_empty")); return; }
   const head=rows[0].map(h=>h.trim().toLowerCase());
-  if(!head.includes("voornaam")||!head.includes("naam")){ toast("Kolommen voornaam en naam ontbreken. Gebruik het sjabloon."); return; }
+  if(!head.includes("voornaam")||!head.includes("naam")){ toast(t("csv_cols")); return; }
   let added=0, updated=0;
   for(const r of rows.slice(1)){
     const d={}; head.forEach((h,i)=>{ if(CSV_COLS.includes(h)) d[h]=(r[i]||"").trim(); });
     if(!d.voornaam||!d.naam) continue;
     d.badge=normBadge(d.badge);
+    if(d.moedertaal!==undefined){
+      const raw=d.moedertaal; delete d.moedertaal;
+      if(raw==="other"){ d.moedertaal="other"; } else if(raw){ Object.assign(d, parseLangValue(raw)); }
+    }
+    if(d.mailtaal){ const m=parseLangValue(d.mailtaal).moedertaal; d.mailtaal = LANGS.includes(m)? m : "nl"; }
+    for(const k of Object.keys(d)){ if(d[k]==="") delete d[k]; }
     const match=kidsSorted().find(c=>(d.badge && normBadge(c.badge)===d.badge) || (c.voornaam===d.voornaam && c.naam===d.naam && (c.geboortedatum||"")===(d.geboortedatum||"")));
     const data=Object.assign({}, match||{}, d, {id: match? match.id : uid(), updatedAt:new Date().toISOString()});
     try{ await DB.put("children",data); S.children.set(data.id,data); match? updated++ : added++; }
     catch(err){ failWrite(err); break; }
   }
-  renderAll(); toast(`${added} toegevoegd, ${updated} bijgewerkt`);
+  renderAll(); toast(t("csv_done",{a:added,u:updated}));
 });
 
 /* ================= backup ================= */
 function checkBackupAge(){
   const last=localStorage.getItem("kapstok.lastBackup");
-  $("#last-backup").textContent = last? "Laatste back-up: "+new Date(last).toLocaleString("nl-BE") : "Er werd nog geen back-up gemaakt.";
+  $("#last-backup").textContent = last? t("last_backup",{d:new Date(last).toLocaleString(LOCALE[L])}) : t("no_backup_yet");
   const old = !last || (Date.now()-new Date(last))>7*864e5;
-  if(S.children.size && old) notice(`<span>${last? "Er is al meer dan een week geen back-up gemaakt" : "Er is nog geen back-up gemaakt"} van de gegevens op dit toestel.</span><button class="btn small" data-act="go-admin">Back-up maken</button>`);
-  else notice("");
+  if(S.children.size && old) notice(`<span>${esc(t(last?"backup_old":"backup_none"))}</span><button class="btn small" data-act="go-admin">${esc(t("make_backup"))}</button>`);
+  else if(location.protocol!=="file:") notice("");
 }
 async function buildBackup(photoDays){
   const [children, days, reports, photos]=await Promise.all([DB.all("children"),DB.all("days"),DB.all("reports"),DB.all("photos")]);
@@ -836,44 +1082,45 @@ async function buildBackup(photoDays){
   return new Blob([JSON.stringify({app:"kapstok", version:1, exportedAt:new Date().toISOString(), children, days, reports, photos:out})], {type:"application/json"});
 }
 async function makeBackup(photoDays){
-  const box=$("#backup-ready"); box.innerHTML=`<span class="sub">Back-up voorbereiden…</span>`;
+  const box=$("#backup-ready"); box.innerHTML=`<span class="sub">${esc(t("backup_prep"))}</span>`;
   try{
     const blob=await buildBackup(photoDays);
-    const name=`pimpapunt-backup-${dayKey()}${photoDays?"-met-fotos":""}.json`;
-    box.innerHTML=`<button class="btn go" id="bk-save" type="button">Back-up bewaren (${(blob.size/1048576).toFixed(1)} MB)</button>`;
+    const name=`pimpapunt-backup-${dayKey()}${photoDays?"-foto":""}.json`;
+    box.innerHTML=`<button class="btn go" id="bk-save" type="button">${esc(t("backup_save",{s:(blob.size/1048576).toFixed(1)}))}</button>`;
     $("#bk-save").addEventListener("click", async ()=>{ await saveFile(name, blob); localStorage.setItem("kapstok.lastBackup", new Date().toISOString()); checkBackupAge(); box.innerHTML=""; });
-  }catch(err){ box.innerHTML=""; toast("De back-up kon niet gemaakt worden."); }
+  }catch(err){ box.innerHTML=""; toast(t("backup_fail")); }
 }
 $("#restore-in").addEventListener("change", async ev=>{
   const f=ev.target.files[0]; ev.target.value=""; if(!f) return;
-  let data; try{ data=JSON.parse(await f.text()); }catch(_){ toast("Dit is geen geldig back-upbestand."); return; }
-  if(!data || data.app!=="kapstok"){ toast("Dit is geen Pimpapunt-back-up."); return; }
-  if(!confirm(`Back-up van ${new Date(data.exportedAt).toLocaleString("nl-BE")} terugzetten?\nKinderen, dagen en verslagen uit de back-up overschrijven dezelfde gegevens op dit toestel.`)) return;
-  toast("Back-up terugzetten…");
+  let data; try{ data=JSON.parse(await f.text()); }catch(_){ toast(t("restore_invalid")); return; }
+  if(!data || data.app!=="kapstok"){ toast(t("restore_notours")); return; }
+  if(!confirm(t("restore_confirm",{d:new Date(data.exportedAt).toLocaleString(LOCALE[L])}))) return;
+  toast(t("restoring"));
   try{
     for(const c of data.children||[]) await DB.put("children",c);
     for(const d of data.days||[]) await DB.put("days",d);
     for(const r of data.reports||[]) await DB.put("reports",r);
     for(const p of data.photos||[]){ const blob=await (await fetch(p.data)).blob(); await DB.put("photos",{id:p.id, blob, createdAt:p.createdAt}); }
-    urlCache.clear(); await loadAll(); toast("Back-up teruggezet");
+    urlCache.clear(); await loadAll(); toast(t("restored"));
   }catch(err){ failWrite(err); }
 });
 async function storageInfo(){
-  const el=$("#storage-info"); let txt="";
+  const el=$("#storage-info"); el.textContent=t("computing"); let txt="";
   try{
-    if(navigator.storage && navigator.storage.estimate){ const e=await navigator.storage.estimate(); txt+=`In gebruik: ${((e.usage||0)/1048576).toFixed(1)} MB. `; }
-    if(navigator.storage && navigator.storage.persisted){ const p=await navigator.storage.persisted(); txt+= p? "De gegevens zijn beschermd tegen automatisch opruimen." : "Gebruik Pimpapunt via het icoon op het beginscherm, zodat iOS de gegevens niet opruimt."; }
+    if(navigator.storage && navigator.storage.estimate){ const e=await navigator.storage.estimate(); txt+=t("storage_used",{s:((e.usage||0)/1048576).toFixed(1)}); }
+    if(navigator.storage && navigator.storage.persisted){ const p=await navigator.storage.persisted(); txt+= t(p?"storage_ok":"storage_warn"); }
   }catch(_){}
-  el.textContent=txt||"Geen informatie beschikbaar.";
+  el.textContent=txt||t("storage_na");
 }
 
 /* ================= click routing ================= */
 function showTab(name){
-  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", String(t.dataset.tab===name)));
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected", String(b.dataset.tab===name)));
   ["today","kids","admin"].forEach(n=>$("#view-"+n).classList.toggle("hidden", n!==name));
   if(name==="admin"){ storageInfo(); checkBackupAge(); }
 }
 document.addEventListener("click", ev=>{
+  const lb=ev.target.closest("[data-lang]"); if(lb){ setLang(lb.dataset.lang); return; }
   const b=ev.target.closest("[data-open],[data-edit],[data-act],[data-link],[data-tab],[data-report]"); if(!b) return;
   if(b.dataset.tab){ showTab(b.dataset.tab); return; }
   if(b.dataset.open){ openChild(b.dataset.open); return; }
@@ -881,47 +1128,48 @@ document.addEventListener("click", ev=>{
   if(b.dataset.report){ openReport(S.openChild, b.dataset.report); return; }
   if(b.dataset.link){ const c=S.children.get(b.dataset.link); if(!c) return;
     const data=Object.assign({}, c, {badge:normBadge(b.dataset.code), updatedAt:new Date().toISOString()});
-    DB.put("children",data).then(()=>{ S.children.set(c.id,data); toast("Badge gekoppeld aan "+c.voornaam); closeSheet(); renderAll(); }, failWrite); return; }
+    DB.put("children",data).then(()=>{ S.children.set(c.id,data); toast(t("badge_linked",{n:c.voornaam})); closeSheet(); renderAll(); }, failWrite); return; }
   const id=S.openChild, a=b.dataset.act;
   switch(a){
     case "close": closeSheet(); break;
     case "go-kids": showTab("kids"); openForm(null); break;
     case "go-admin": showTab("admin"); break;
     case "new-kid": openForm(null); break;
-    case "in": checkIn(id, at()); toast(S.children.get(id).voornaam+" is binnen"); resetTime(); break;
-    case "out": { const t=at(); checkOut(id,t); resetTime(); openMail(id); break; }
-    case "sleep": { const t=at(); saveEntry(id,e=>{ const s=e.sleeps[e.sleeps.length-1]; if(s&&!s.end) s.end=t; else e.sleeps.push({start:t,end:null}); }); resetTime(); break; }
-    case "dia": saveEntry(id,e=>e.diapers.push({t:at(), kind:b.dataset.kind})); toast("Verversen: "+b.dataset.kind); resetTime(); break;
+    case "in": checkIn(id, at()); toast(t("is_in",{n:S.children.get(id).voornaam})); resetTime(); break;
+    case "out": { const tt=at(); checkOut(id,tt); resetTime(); openMail(id); break; }
+    case "sleep": { const tt=at(); saveEntry(id,e=>{ const s=e.sleeps[e.sleeps.length-1]; if(s&&!s.end) s.end=tt; else e.sleeps.push({start:tt,end:null}); }); resetTime(); break; }
+    case "dia": saveEntry(id,e=>e.diapers.push({t:at(), kind:b.dataset.kind})); toast(t("dia_toast",{k:diaLabel(b.dataset.kind)})); resetTime(); break;
     case "note": addNote(id); break;
     case "del": { const k=b.dataset.k, i=+b.dataset.i, f=b.dataset.f;
-      if(!confirm("Deze registratie verwijderen?")) break;
+      if(!confirm(t("confirm_del"))) break;
       saveEntry(id,e=>{ if(k==="sessions"&&f==="out") e.sessions[i].out=null; else e[k].splice(i,1); }); break; }
     case "delphoto": { const i=+b.dataset.i; const p=entry(id).photos[i]; if(!p) break;
-      if(!confirm("Deze foto definitief verwijderen?")) break;
+      if(!confirm(t("confirm_delphoto"))) break;
       saveEntry(id,e=>e.photos.splice(i,1)); DB.del("photos",p.id).catch(()=>{}); break; }
     case "mail": openMail(id); break;
     case "back": openChild(id); break;
     case "edit": openForm(id); break;
-    case "copy": { const t=$("#m-body"); const txt=$("#m-subj").value+"\n\n"+t.value;
-      (navigator.clipboard? navigator.clipboard.writeText(txt) : Promise.reject()).then(()=>toast("Tekst gekopieerd"), ()=>{ t.select(); toast("Selecteer en kopieer de tekst"); }); break; }
+    case "copy": { const ta=$("#m-body"); const txt=$("#m-subj").value+"\n\n"+ta.value;
+      (navigator.clipboard? navigator.clipboard.writeText(txt) : Promise.reject()).then(()=>toast(t("copied")), ()=>{ ta.select(); toast(t("select_copy")); }); break; }
     case "delete-kid": { const c=S.children.get(id); if(!c) break;
-      if(!confirm(fullName(c)+" verwijderen uit de lijst? De dagregistraties en verslagen blijven bewaard.")) break;
-      DB.del("children",id).then(()=>{ S.children.delete(id); toast(c.voornaam+" is verwijderd"); closeSheet(); renderAll(); }, failWrite); break; }
+      if(!confirm(t("confirm_delkid",{n:fullName(c)}))) break;
+      DB.del("children",id).then(()=>{ S.children.delete(id); toast(t("kid_deleted",{n:c.voornaam})); closeSheet(); renderAll(); }, failWrite); break; }
     case "backup": makeBackup(+b.dataset.photos); break;
     case "csv-export": saveFile("kinderen-"+dayKey()+".csv", new Blob([toCSV(kidsSorted())],{type:"text/csv"})); break;
     case "csv-template": saveFile("kinderen-sjabloon.csv", new Blob([toCSV([])],{type:"text/csv"})); break;
   }
 });
-const sign=$("#set-sign"); sign.value=SET.sign||""; sign.addEventListener("change", ()=>{ SET.sign=sign.value.trim(); saveSet(); toast("Ondertekening bewaard"); });
+const sign=$("#set-sign"); sign.value=SET.sign||""; sign.addEventListener("change", ()=>{ SET.sign=sign.value.trim(); saveSet(); toast(t("sign_saved")); });
 
 /* ================= start ================= */
+applyStatic();
 renderAll();
-if(location.protocol==="file:"){ notice("<span>Open Pimpapunt via een webadres (https), niet als los bestand. Zie de installatie-instructies.</span>"); }
+if(location.protocol==="file:"){ notice(`<span>${esc(t("file_protocol"))}</span>`); }
 if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost")){
   navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
 if(navigator.storage && navigator.storage.persist){ navigator.storage.persist().catch(()=>{}); }
-DB.open().then(loadAll).catch(()=>{ S.ready=true; notice("<span>De opslag op dit toestel kon niet geopend worden. Controleer of privé-navigatie uit staat.</span>"); renderAll(); });
+DB.open().then(loadAll).catch(()=>{ S.ready=true; notice(`<span>${esc(t("db_fail"))}</span>`); renderAll(); });
 setInterval(async ()=>{ const k=dayKey(); if(k!==S.date){ S.date=k; S.day=(await DB.get("days",k).catch(()=>null))||{date:k,kids:{}}; renderAll(); } else renderHeader(); }, 60000);
 })();
 </script>
